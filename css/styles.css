@@ -517,6 +517,8 @@ section {
     overflow: hidden;
     transition: all var(--transition-base);
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
 }
 
 .project-card:hover {
@@ -525,10 +527,21 @@ section {
     border-color: var(--color-primary);
 }
 
+.project-gallery {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(180, 76, 255, 0.1), rgba(0, 245, 255, 0.1));
+    border-radius: 0;
+    position: relative;
+    flex-shrink: 0;
+}
+
 .project-image {
     width: 100%;
     height: 250px;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .project-image-placeholder {
@@ -837,6 +850,166 @@ section {
     flex-wrap: wrap;
     gap: var(--spacing-sm);
     margin-top: var(--spacing-md);
+}
+
+/* ===================================
+   Gallery (Project Cards & Modals)
+   =================================== */
+.project-gallery {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(180, 76, 255, 0.1), rgba(0, 245, 255, 0.1));
+    border-radius: 16px;
+}
+
+.modal-gallery {
+    width: 100%;
+    margin-bottom: var(--spacing-2xl);
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(180, 76, 255, 0.1), rgba(0, 245, 255, 0.1));
+}
+
+.gallery-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-tertiary);
+}
+
+.gallery-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: opacity var(--transition-base);
+    opacity: 1;
+}
+
+.gallery-image.hidden {
+    display: none;
+    opacity: 0;
+}
+
+/* Gallery Controls */
+.gallery-controls {
+    position: absolute;
+    bottom: var(--spacing-md);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(var(--blur-md));
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gallery-nav {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(180, 76, 255, 0.3);
+    color: var(--color-text);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-base);
+    border: 1px solid rgba(180, 76, 255, 0.5);
+}
+
+.gallery-nav:hover {
+    background: rgba(180, 76, 255, 0.6);
+    border-color: var(--color-primary);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(180, 76, 255, 0.5);
+}
+
+.gallery-nav:active {
+    transform: scale(0.95);
+}
+
+.gallery-nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: scale(1);
+}
+
+.gallery-counter {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    min-width: 50px;
+    text-align: center;
+    user-select: none;
+}
+
+.gallery-counter .current {
+    color: var(--color-primary-light);
+    font-weight: 700;
+}
+
+/* Gallery Indicators (dots) */
+.gallery-indicators {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-md);
+}
+
+.gallery-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gallery-indicator.active {
+    background: var(--color-primary);
+    width: 24px;
+    border-radius: 4px;
+    border-color: var(--color-primary);
+}
+
+.gallery-indicator:hover {
+    background: rgba(180, 76, 255, 0.6);
+}
+
+/* Gallery Media Types */
+.gallery-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gallery-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: var(--color-text-secondary);
+    gap: var(--spacing-md);
+}
+
+.gallery-placeholder svg {
+    width: 80px;
+    height: 80px;
+    opacity: 0.5;
 }
 
 /* ===================================

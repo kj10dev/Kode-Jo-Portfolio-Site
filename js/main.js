@@ -438,6 +438,107 @@ function initCustomCursor() {
 }
 
 // ===================================
+// Gallery Functionality
+// ===================================
+function initGallery() {
+    // Find all gallery containers
+    const galleryContainers = document.querySelectorAll('.gallery-container');
+    
+    galleryContainers.forEach((container) => {
+        // Get all images/videos in this gallery
+        const items = Array.from(container.querySelectorAll('.gallery-image'));
+        
+        if (items.length === 0) return;
+        
+        // Get gallery controls
+        const prevBtn = container.querySelector('.gallery-prev');
+        const nextBtn = container.querySelector('.gallery-next');
+        const currentSpan = container.querySelector('.gallery-counter .current');
+        const totalSpan = container.querySelector('.gallery-counter .total');
+        
+        // Update total count
+        if (totalSpan) {
+            totalSpan.textContent = items.length;
+        }
+        
+        let currentIndex = 0;
+        
+        // Function to show specific slide
+        function showSlide(index) {
+            // Wrap index around
+            if (index < 0) {
+                currentIndex = items.length - 1;
+            } else if (index >= items.length) {
+                currentIndex = 0;
+            } else {
+                currentIndex = index;
+            }
+            
+            // Hide all items
+            items.forEach((item) => {
+                item.classList.add('hidden');
+                item.style.opacity = '0';
+            });
+            
+            // Show current item with animation
+            items[currentIndex].classList.remove('hidden');
+            gsap.to(items[currentIndex], {
+                opacity: 1,
+                duration: 0.4,
+                ease: 'power2.inOut'
+            });
+            
+            // Update counter
+            if (currentSpan) {
+                currentSpan.textContent = currentIndex + 1;
+            }
+            
+            // Update button states
+            if (prevBtn) {
+                prevBtn.disabled = items.length === 1;
+            }
+            if (nextBtn) {
+                nextBtn.disabled = items.length === 1;
+            }
+        }
+        
+        // Next button
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showSlide(currentIndex + 1);
+            });
+        }
+        
+        // Previous button
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showSlide(currentIndex - 1);
+            });
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const modal = container.closest('.modal');
+            const isModalActive = modal && modal.classList.contains('active');
+            const isInCard = !modal; // In project card
+            
+            if (isModalActive || isInCard) {
+                if (e.key === 'ArrowRight') {
+                    showSlide(currentIndex + 1);
+                } else if (e.key === 'ArrowLeft') {
+                    showSlide(currentIndex - 1);
+                }
+            }
+        });
+        
+        // Initialize - show first slide
+        showSlide(0);
+    });
+}
+
+// ===================================
 // Initialize All Animations
 // ===================================
 function init() {
@@ -445,6 +546,7 @@ function init() {
     initScrollAnimations();
     initSkillCardAnimations();
     initProjectCardAnimations();
+    initGallery();
     initModals();
     initFormAnimations();
     initParallaxEffects();

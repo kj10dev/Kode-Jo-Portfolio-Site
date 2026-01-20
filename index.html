@@ -33,7 +33,7 @@
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
-            <a href="#home" class="nav-logo">DEV<span class="gradient-text">.</span></a>
+            <a href="#home" class="nav-logo">Kode-Jo<span class="gradient-text">.</span></a>
             <ul class="nav-menu" id="navMenu">
                 <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
@@ -52,7 +52,7 @@
     <section id="home" class="hero">
         <div class="container">
             <div class="hero-content">
-                <div class="hero-badge">Junior Developer</div>
+                <div class="hero-badge">Developer</div>
                 <div class="hero-badge">UI/UX Designer</div>
                 <div class="hero-badge">3D Design</div>
                 <h1 class="hero-title">
@@ -148,29 +148,40 @@
 
             <div class="projects-grid">
                 <article class="project-card" data-project="1">
-                    <div class="project-image">
-                        <div class="project-image-placeholder project-color-1">
-                            <span class="project-icon">🎨</span>
+                    <div class="project-gallery">
+                        <div class="gallery-container">
+                            <img src="./assets/projects/Joyfuljaws_site.jpg" alt="Joyful Jaws - 1" class="gallery-image">
+                            <div class="gallery-controls">
+                                <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                                <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                                <div class="gallery-counter"><span class="current">1</span>/<span class="total">1</span></div>
+                            </div>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">Interactive Design System</h3>
+                        <h3 class="project-title">Joyful Jaws</h3>
                         <p class="project-description">
-                            A comprehensive design system built with modern CSS and interactive components
+                            An intuitive and user-friendly redesign for a dental practice website
                         </p>
                         <div class="project-tags">
                             <span class="tag">HTML</span>
                             <span class="tag">CSS</span>
                             <span class="tag">Figma</span>
+                            <span class="tag">Framer</span>
                         </div>
                         <button class="project-btn" data-modal="project1">View Details</button>
                     </div>
                 </article>
 
                 <article class="project-card" data-project="2">
-                    <div class="project-image">
-                        <div class="project-image-placeholder project-color-2">
-                            <span class="project-icon">📱</span>
+                    <div class="project-gallery">
+                        <div class="gallery-container">
+                            <span class="project-icon gallery-image">📱</span>
+                            <div class="gallery-controls">
+                                <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                                <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                                <div class="gallery-counter"><span class="current">1</span>/<span class="total">1</span></div>
+                            </div>
                         </div>
                     </div>
                     <div class="project-content">
@@ -187,41 +198,29 @@
                     </div>
                 </article>
 
-                <article class="project-card" data-project="3">
-                    <div class="project-image">
-                        <div class="project-image-placeholder project-color-3">
-                            <span class="project-icon">🎮</span>
+                <article class="project-card" data-project="4">
+                    <div class="project-gallery">
+                        <div class="gallery-container">
+                            <img src="./assets/projects/3D city.png" alt="3D Futuristic City" class="gallery-image">
+                            <img src="./assets/projects/3D city.png" alt="3D Futuristic City" class="gallery-image">
+                            <div class="gallery-controls">
+                                <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                                <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                                <div class="gallery-counter"><span class="current">1</span>/<span class="total">1</span></div>
+                            </div>
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">3D Product Showcase</h3>
+                        <h3 class="project-title">3D Futuristic city</h3>
                         <p class="project-description">
-                            Interactive 3D product viewer with realistic lighting and animations
+                            A real-time interactive 3D futuristic city
                         </p>
                         <div class="project-tags">
                             <span class="tag">Three.js</span>
                             <span class="tag">JavaScript</span>
+                            <span class="tag">WebGL</span>
+                            <span class="tag">HTML & CSS</span>
                             <span class="tag">3D</span>
-                        </div>
-                        <button class="project-btn" data-modal="project3">View Details</button>
-                    </div>
-                </article>
-
-                <article class="project-card" data-project="4">
-                    <div class="project-image">
-                        <div class="project-image-placeholder project-color-4">
-                            <span class="project-icon">🔧</span>
-                        </div>
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Python Data Dashboard</h3>
-                        <p class="project-description">
-                            Real-time data visualization dashboard with SQL database integration
-                        </p>
-                        <div class="project-tags">
-                            <span class="tag">Python</span>
-                            <span class="tag">SQL</span>
-                            <span class="tag">Data Viz</span>
                         </div>
                         <button class="project-btn" data-modal="project4">View Details</button>
                     </div>
@@ -277,7 +276,9 @@
                     </div>
 
                     <div class="contact-item">
-                        <div class="contact-icon">💼</div>
+                        <div class="contact-icon">
+                            <img src="./assets/icons/linkedin-icon.png" alt="LinkedIn" class="linkedin-icon">
+                        </div>
                         <div class="contact-details">
                             <h3>LinkedIn</h3>
                             <p>linkedin.com/in/kojo-ahyia-osae</p>
@@ -309,14 +310,30 @@
         <div class="modal-content">
             <button class="modal-close">&times;</button>
             <h2 class="modal-title">Interactive Design System</h2>
+            
+            <div class="modal-gallery">
+                <div class="gallery-container">
+                    <img src="./assets/projects/Joyfuljaws_site.jpg" alt="Joyful Jaws - 1" class="gallery-image">
+                    <div class="gallery-controls">
+                        <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                        <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                        <div class="gallery-counter"><span class="current">1</span>/<span class="total">1</span></div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="modal-body">
                 <p>A comprehensive design system featuring reusable components, consistent styling, and
-                    accessibility-first approach. Built to scale across multiple projects.</p>
+                    accessibility-first approach. Built to scale across multiple projects.
+                    Joyful Jaws Dentistry is a modern, community-focused dental practice
+                    that welcomes patients and builds trust from the first impression. The website design presents a
+                    friendly,
+                    professional brand offering personalized, affordable, and comprehensive dental care to Mdantsane,
+                    Cambridge and surrounding communities.
+                </p>
                 <h3>Key Features</h3>
                 <ul>
-                    <li>40+ reusable components</li>
-                    <li>Custom CSS properties for theming</li>
-                    <li>Figma integration for design handoff</li>
+                    <li>Web design & branding</li>
                     <li>Responsive and accessible</li>
                 </ul>
                 <h3>Technologies</h3>
@@ -324,7 +341,7 @@
                     <span class="tag">HTML5</span>
                     <span class="tag">CSS3</span>
                     <span class="tag">Figma</span>
-                    <span class="tag">UX/UI</span>
+                    <span class="tag">Framer</span>
                 </div>
             </div>
         </div>
@@ -335,6 +352,18 @@
         <div class="modal-content">
             <button class="modal-close">&times;</button>
             <h2 class="modal-title">Kotlin Mobile App</h2>
+            
+            <div class="modal-gallery">
+                <div class="gallery-container">
+                    <span class="project-icon gallery-image" style="font-size: 4rem;">📱</span>
+                    <div class="gallery-controls">
+                        <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                        <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                        <div class="gallery-counter"><span class="current">1</span>/<span class="total">1</span></div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="modal-body">
                 <p>A feature-rich Android application built with Kotlin, showcasing modern architecture patterns and
                     clean code principles.</p>
@@ -361,6 +390,18 @@
         <div class="modal-content">
             <button class="modal-close">&times;</button>
             <h2 class="modal-title">3D Product Showcase</h2>
+            
+            <div class="modal-gallery">
+                <div class="gallery-container">
+                    <span class="project-icon gallery-image" style="font-size: 4rem;">🎨</span>
+                    <div class="gallery-controls">
+                        <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                        <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                        <div class="gallery-counter"><span class="current">1</span>/<span class="total">1</span></div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="modal-body">
                 <p>An immersive 3D product viewer that allows users to interact with products in a realistic 3D
                     environment with dynamic lighting and smooth animations.</p>
@@ -386,23 +427,41 @@
         <div class="modal-overlay"></div>
         <div class="modal-content">
             <button class="modal-close">&times;</button>
-            <h2 class="modal-title">Python Data Dashboard</h2>
+            <h2 class="modal-title">3D Futuristic City</h2>
+            
+            <div class="modal-gallery">
+                <div class="gallery-container">
+                    <img src="./assets/projects/3D city.png" alt="3D Futuristic City" class="gallery-image">
+                    <img src="./assets/projects/3D city.png" alt="3D Futuristic City" class="gallery-image">
+
+                    <div class="gallery-controls">
+                        <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                        <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                        <div class="gallery-counter"><span class="current">1</span>/<span class="total">1</span></div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="modal-body">
-                <p>A real-time data visualization dashboard that connects to SQL databases and displays interactive
-                    charts and metrics.</p>
+                <p>A real-time interactive 3D futuristic city using transformations,  
+                    projections, lighting, shading, and texture mapping. 
+                    The city will feature skyscrapers, neon billboards, flying vehicles, 
+                    and glowing streetlights to showcase graphics techniques.
+                </p>
                 <h3>Key Features</h3>
                 <ul>
-                    <li>Real-time data updates</li>
-                    <li>Interactive charts and graphs</li>
-                    <li>SQL query optimization</li>
-                    <li>Responsive design</li>
+                    <li>Transformations</li>
+                    <li>Lighting</li>
+                    <li>Mapping</li>
+                    <li>Shading</li>
                 </ul>
                 <h3>Technologies</h3>
                 <div class="modal-tags">
-                    <span class="tag">Python</span>
-                    <span class="tag">SQL</span>
-                    <span class="tag">Data Visualization</span>
-                    <span class="tag">APIs</span>
+                    <span class="tag">Three.js</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">WebGL</span>
+                    <span class="tag">HTML & CSS</span>
+                    <span class="tag">3D</span>
                 </div>
             </div>
         </div>
