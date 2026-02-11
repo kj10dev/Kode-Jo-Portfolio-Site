@@ -54,7 +54,7 @@ function createShapes() {
 
     const colors = [
         0xb44cff, // Primary purple
-        0x00f5ff, // Secondary cyan
+        0xb0b0b0, // Secondary grey
         0xff006e, // Accent pink
         0x39ff14, // Accent green
         0xff6b35  // Accent orange
@@ -109,7 +109,7 @@ function createShapes() {
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
 
-    const pointLight2 = new THREE.PointLight(0x00f5ff, 1, 100);
+    const pointLight2 = new THREE.PointLight(0xb0b0b0, 1, 100);
     pointLight2.position.set(-5, -5, 5);
     scene.add(pointLight2);
 }

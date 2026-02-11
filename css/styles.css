@@ -11,9 +11,9 @@
     --color-primary-dark: #9933ee;
     --color-primary-light: #c666ff;
 
-    --color-secondary: #00f5ff;
-    --color-secondary-dark: #00d4dd;
-    --color-secondary-light: #33f7ff;
+    --color-secondary: #9a9a9a;
+    --color-secondary-dark: #6b6b6b;
+    --color-secondary-light: #d0d0d0;
 
     --color-accent-pink: #ff006e;
     --color-accent-green: #39ff14;
@@ -25,9 +25,9 @@
     --color-text-muted: #6b6b6b;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, #f0f0f0 100%);
     --gradient-accent: linear-gradient(135deg, var(--color-accent-pink) 0%, var(--color-accent-orange) 100%);
-    --gradient-green: linear-gradient(135deg, var(--color-accent-green) 0%, var(--color-secondary) 100%);
+    --gradient-green: linear-gradient(135deg, var(--color-accent-green) 0%, #b0b0b0 100%);
 
     /* Typography */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -56,7 +56,7 @@
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
     --shadow-glow-primary: 0 0 20px rgba(180, 76, 255, 0.5);
-    --shadow-glow-secondary: 0 0 20px rgba(0, 245, 255, 0.5);
+    --shadow-glow-secondary: 0 0 20px rgba(154, 154, 154, 0.5);
 
     --blur-sm: 8px;
     --blur-md: 16px;
@@ -562,7 +562,7 @@ section {
 }
 
 .project-color-2 {
-    background: linear-gradient(135deg, #00f5ff 0%, #39ff14 100%);
+    background: linear-gradient(135deg, #b0b0b0 0%, #39ff14 100%);
 }
 
 .project-color-3 {
@@ -570,7 +570,7 @@ section {
 }
 
 .project-color-4 {
-    background: linear-gradient(135deg, #39ff14 0%, #00f5ff 100%);
+    background: linear-gradient(135deg, #39ff14 0%, #b0b0b0 100%);
 }
 
 .project-icon {
@@ -1143,4 +1143,9 @@ section {
     .form-textarea {
         font-size: var(--font-size-sm);
     }
+}
+
+.svg-icon {
+    width: 32px;
+    height: auto;
 }
