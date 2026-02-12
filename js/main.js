@@ -13,6 +13,7 @@ const navMenu = document.getElementById('navMenu');
 if (navToggle && navMenu) {
     navToggle.addEventListener('click', () => {
         navMenu.classList.toggle('active');
+        navToggle.classList.toggle('active');
     });
 }
 
@@ -20,8 +21,51 @@ if (navToggle && navMenu) {
 document.querySelectorAll('.nav-link').forEach(link => {
     link.addEventListener('click', () => {
         if (navMenu) navMenu.classList.remove('active');
+        if (navToggle) navToggle.classList.remove('active');
     });
 });
+
+// ===================================
+// Theme Toggle (Light/Dark Mode)
+// ===================================
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.querySelector('.theme-icon');
+const html = document.documentElement;
+
+// Load theme preference from localStorage
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    html.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+}
+
+function updateThemeIcon(theme) {
+    if (themeIcon) {
+        themeIcon.textContent = theme === 'light' ? '☀️' : '🌙';
+    }
+}
+
+function toggleTheme() {
+    const currentTheme = html.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+
+    // Update Three.js scene colors for the new theme
+    if (typeof updateThreeSceneColors === 'function') {
+        updateThreeSceneColors();
+    }
+}
+
+if (themeToggle) {
+    themeToggle.addEventListener('click', toggleTheme);
+}
+
+// Load saved theme on page load and immediately to prevent flash
+loadTheme();
+window.addEventListener('DOMContentLoaded', loadTheme);
 
 // ===================================
 // Hero Section Animations
@@ -443,26 +487,26 @@ function initCustomCursor() {
 function initGallery() {
     // Find all gallery containers
     const galleryContainers = document.querySelectorAll('.gallery-container');
-    
+
     galleryContainers.forEach((container) => {
         // Get all images/videos in this gallery
         const items = Array.from(container.querySelectorAll('.gallery-image'));
-        
+
         if (items.length === 0) return;
-        
+
         // Get gallery controls
         const prevBtn = container.querySelector('.gallery-prev');
         const nextBtn = container.querySelector('.gallery-next');
         const currentSpan = container.querySelector('.gallery-counter .current');
         const totalSpan = container.querySelector('.gallery-counter .total');
-        
+
         // Update total count
         if (totalSpan) {
             totalSpan.textContent = items.length;
         }
-        
+
         let currentIndex = 0;
-        
+
         // Function to show specific slide
         function showSlide(index) {
             // Wrap index around
@@ -473,13 +517,13 @@ function initGallery() {
             } else {
                 currentIndex = index;
             }
-            
+
             // Hide all items
             items.forEach((item) => {
                 item.classList.add('hidden');
                 item.style.opacity = '0';
             });
-            
+
             // Show current item with animation
             items[currentIndex].classList.remove('hidden');
             gsap.to(items[currentIndex], {
@@ -487,12 +531,12 @@ function initGallery() {
                 duration: 0.4,
                 ease: 'power2.inOut'
             });
-            
+
             // Update counter
             if (currentSpan) {
                 currentSpan.textContent = currentIndex + 1;
             }
-            
+
             // Update button states
             if (prevBtn) {
                 prevBtn.disabled = items.length === 1;
@@ -501,7 +545,7 @@ function initGallery() {
                 nextBtn.disabled = items.length === 1;
             }
         }
-        
+
         // Next button
         if (nextBtn) {
             nextBtn.addEventListener('click', (e) => {
@@ -509,7 +553,7 @@ function initGallery() {
                 showSlide(currentIndex + 1);
             });
         }
-        
+
         // Previous button
         if (prevBtn) {
             prevBtn.addEventListener('click', (e) => {
@@ -517,13 +561,13 @@ function initGallery() {
                 showSlide(currentIndex - 1);
             });
         }
-        
+
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             const modal = container.closest('.modal');
             const isModalActive = modal && modal.classList.contains('active');
             const isInCard = !modal; // In project card
-            
+
             if (isModalActive || isInCard) {
                 if (e.key === 'ArrowRight') {
                     showSlide(currentIndex + 1);
@@ -532,7 +576,7 @@ function initGallery() {
                 }
             }
         });
-        
+
         // Initialize - show first slide
         showSlide(0);
     });
