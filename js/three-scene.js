@@ -4,6 +4,37 @@
 let scene, camera, renderer, shapes = [];
 let mouse = { x: 0, y: 0 };
 let targetRotation = { x: 0, y: 0 };
+let pointLight1, pointLight2; // Store light references for theme updates
+
+// Color palettes for different themes
+const colorPalettes = {
+    dark: {
+        shapes: [
+            0xb44cff, // Primary purple
+            0x6b4a8f, // Dark purple
+            0xff006e, // Accent pink
+            0x39ff14, // Accent green
+            0xff6b35  // Accent orange
+        ],
+        light1: 0xb44cff,
+        light2: 0x9966ff
+    },
+    light: {
+        shapes: [
+            0x8b2fa3, // Darker purple
+            0x6b1f7f, // Even darker purple
+            0xd91e63, // Darker pink
+            0x2ecc71, // Darker green
+            0xe74c3c  // Darker orange
+        ],
+        light1: 0x8b2fa3,
+        light2: 0x6b1f7f
+    }
+};
+
+function getCurrentTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'dark';
+}
 
 function initThreeScene() {
     const canvas = document.getElementById('three-canvas');
@@ -52,13 +83,8 @@ function createShapes() {
         new THREE.TetrahedronGeometry(0.7)
     ];
 
-    const colors = [
-        0xb44cff, // Primary purple
-        0xb0b0b0, // Secondary grey
-        0xff006e, // Accent pink
-        0x39ff14, // Accent green
-        0xff6b35  // Accent orange
-    ];
+    const theme = getCurrentTheme();
+    const colors = colorPalettes[theme].shapes;
 
     // Create 15 random shapes
     for (let i = 0; i < 15; i++) {
@@ -104,14 +130,37 @@ function createShapes() {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    // Add point light
-    const pointLight = new THREE.PointLight(0xb44cff, 1, 100);
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight);
+    // Add point lights and store references
+    pointLight1 = new THREE.PointLight(colorPalettes[getCurrentTheme()].light1, 1, 100);
+    pointLight1.position.set(5, 5, 5);
+    scene.add(pointLight1);
 
-    const pointLight2 = new THREE.PointLight(0xb0b0b0, 1, 100);
+    pointLight2 = new THREE.PointLight(colorPalettes[getCurrentTheme()].light2, 1, 100);
     pointLight2.position.set(-5, -5, 5);
     scene.add(pointLight2);
+}
+
+// Function to update all shape colors based on theme
+function updateThreeSceneColors() {
+    const theme = getCurrentTheme();
+    const palette = colorPalettes[theme];
+    
+    // Update shape materials
+    shapes.forEach(shape => {
+        const shapeColors = palette.shapes;
+        // Randomize but keep consistent colors - just update to new palette
+        const newColor = shapeColors[Math.floor(Math.random() * shapeColors.length)];
+        shape.material.color.setHex(newColor);
+        shape.material.emissive.setHex(newColor);
+    });
+    
+    // Update light colors
+    if (pointLight1) {
+        pointLight1.color.setHex(palette.light1);
+    }
+    if (pointLight2) {
+        pointLight2.color.setHex(palette.light2);
+    }
 }
 
 function onMouseMove(event) {
