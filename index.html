@@ -259,6 +259,7 @@
 
             <div class="contact-content">
                 <form class="contact-form" id="contactForm" name="contactForm" method="POST" data-netlify="true">
+                    <input type="hidden" name="form-name" value="contactForm">
                     <div class="form-group">
                         <label for="name" class="form-label">Name</label>
                         <input type="text" id="name" name="name" class="form-input" required>
@@ -292,6 +293,7 @@
                         <span class="btn-text">Send Message</span>
                         <span class="btn-loading">Sending...</span>
                     </button>
+                    <div id="contact-success" style="display:none;color:var(--accent,green);margin-top:1rem;">Thank you — your message has been sent.</div>
                 </form>
 
                 <div class="contact-info">
@@ -502,6 +504,32 @@
         </div>
     </div>
 
-</body>
+            <script>
+            // Netlify-compatible AJAX form submission (URL-encoded)
+            (function(){
+                const form = document.getElementById('contactForm');
+                if (!form) return;
+                form.addEventListener('submit', function(e){
+                    e.preventDefault();
+                    const fd = new FormData(form);
+                    fetch(form.getAttribute('action') || '/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams(fd).toString()
+                    })
+                    .then(() => {
+                        const msg = document.getElementById('contact-success');
+                        if (msg) msg.style.display = 'block';
+                        form.reset();
+                    })
+                    .catch(err => {
+                        console.error('Form submit error', err);
+                        alert('There was an error sending the form.');
+                    });
+                });
+            })();
+            </script>
 
-</html>
+    </body>
+
+    </html>
