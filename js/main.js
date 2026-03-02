@@ -37,6 +37,9 @@ function loadTheme() {
     const savedTheme = localStorage.getItem('theme') || 'dark';
     html.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
+    if (typeof window.updateCursorTheme === 'function') {
+        window.updateCursorTheme(savedTheme);
+    }
 }
 
 function updateThemeIcon(theme) {
@@ -56,6 +59,10 @@ function toggleTheme() {
     // Update Three.js scene colors for the new theme
     if (typeof updateThreeSceneColors === 'function') {
         updateThreeSceneColors();
+    }
+    // Update cursor/flair theme if available
+    if (typeof window.updateCursorTheme === 'function') {
+        window.updateCursorTheme(newTheme);
     }
 }
 
@@ -353,9 +360,14 @@ function initFormAnimations() {
     // Input focus animations
     inputs.forEach(input => {
         input.addEventListener('focus', () => {
+            // Use CSS variables so the focus color follows the theme
+            const rootStyles = getComputedStyle(document.documentElement);
+            const primary = rootStyles.getPropertyValue('--color-primary') || '#9aa0a6';
+            const glow = rootStyles.getPropertyValue('--shadow-glow-primary') || '0 0 20px rgba(140,140,150,0.22)';
+
             gsap.to(input, {
-                borderColor: '#b44cff',
-                boxShadow: '0 0 20px rgba(180, 76, 255, 0.5)',
+                borderColor: primary.trim(),
+                boxShadow: glow.trim(),
                 duration: 0.3,
                 ease: 'power2.out'
             });
@@ -363,7 +375,7 @@ function initFormAnimations() {
             const label = input.previousElementSibling;
             if (label && label.classList.contains('form-label')) {
                 gsap.to(label, {
-                    color: '#b44cff',
+                    color: primary.trim(),
                     y: -5,
                     duration: 0.3,
                     ease: 'power2.out'
@@ -375,8 +387,10 @@ function initFormAnimations() {
             if (!input.value) {
                 const label = input.previousElementSibling;
                 if (label && label.classList.contains('form-label')) {
+                    const rootStyles = getComputedStyle(document.documentElement);
+                    const secondary = rootStyles.getPropertyValue('--color-text-secondary') || '#b0b0b0';
                     gsap.to(label, {
-                        color: '#b0b0b0',
+                        color: secondary.trim(),
                         y: 0,
                         duration: 0.3,
                         ease: 'power2.out'
@@ -440,45 +454,61 @@ function initParallaxEffects() {
 function initCustomCursor() {
     const cursor = document.createElement('div');
     cursor.classList.add('custom-cursor');
+    const flair = document.createElement('div');
+    flair.classList.add('cursor-flair');
+    document.body.appendChild(flair);
     document.body.appendChild(cursor);
 
-    // Add cursor styles dynamically
+    // Add cursor + flair styles dynamically (kept minimal; colors set dynamically)
     const style = document.createElement('style');
     style.textContent = `
-        .custom-cursor {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #b44cff;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.2s ease;
-            mix-blend-mode: difference;
-        }
-        
-        .custom-cursor.hover {
-            transform: scale(2);
-            background: rgba(180, 76, 255, 0.3);
-        }
+        .custom-cursor { width: 18px; height: 18px; border: 2px solid; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.18s ease; mix-blend-mode: exclusion; }
+        .custom-cursor.hover { transform: scale(2); }
+        .cursor-flair { width: 56px; height: 56px; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; filter: blur(10px); opacity: 0.9; transform: translate(-50%, -50%); }
+        .cursor-flair.hidden { opacity: 0; }
     `;
     document.head.appendChild(style);
 
-    // Update cursor position
+    // Helper to update cursor/flair colors per theme
+    function updateCursorTheme(theme) {
+        const isLight = theme === 'light';
+        // border color for cursor and background for flair (bolder in light mode)
+        const borderColor = isLight ? 'rgba(30,30,30,0.9)' : 'rgba(230,230,232,0.9)';
+        const flairColor = isLight ? 'rgba(30,30,30,0.12)' : 'rgba(230,230,232,0.08)';
+        cursor.style.borderColor = borderColor;
+        cursor.style.background = 'transparent';
+        flair.style.background = flairColor;
+        // Blend mode tweak for legibility
+        cursor.style.mixBlendMode = isLight ? 'normal' : 'exclusion';
+        flair.style.mixBlendMode = isLight ? 'normal' : 'screen';
+    }
+
+    // Expose updater so toggleTheme can call it
+    window.updateCursorTheme = updateCursorTheme;
+
+    // Update cursor position with a quick follow and a trailing flair
     document.addEventListener('mousemove', (e) => {
-        gsap.to(cursor, {
-            x: e.clientX - 10,
-            y: e.clientY - 10,
-            duration: 0.3,
-            ease: 'power2.out'
+        // fast small cursor
+        gsap.to(cursor, { x: e.clientX - 9, y: e.clientY - 9, duration: 0.12, ease: 'power2.out' });
+        // slower trailing flair for the 'following' effect
+        gsap.to(flair, { x: e.clientX, y: e.clientY, duration: 0.55, ease: 'power4.out' });
+    });
+
+    // Enlarge cursor and intensify flair on interactive elements
+    document.querySelectorAll('a, button, .project-card, .skill-card').forEach(elem => {
+        elem.addEventListener('mouseenter', () => {
+            cursor.classList.add('hover');
+            gsap.to(flair, { scale: 1.25, duration: 0.25, ease: 'power2.out' });
+        });
+        elem.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hover');
+            gsap.to(flair, { scale: 1, duration: 0.25, ease: 'power2.out' });
         });
     });
 
-    // Enlarge cursor on interactive elements
-    document.querySelectorAll('a, button, .project-card, .skill-card').forEach(elem => {
-        elem.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-        elem.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
+    // Initialize theme look
+    const initialTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    updateCursorTheme(initialTheme);
 }
 
 // ===================================
@@ -603,3 +633,27 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+
+// Netlify-compatible AJAX form submission (URL-encoded)
+    (function(){
+        const form = document.getElementById('contactForm');
+        if (!form) return;
+                form.addEventListener('submit', function(e){
+                    e.preventDefault();
+                    const fd = new FormData(form);
+                    fetch(form.getAttribute('action') || '/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams(fd).toString()
+                    })
+                    .then(() => {
+                        const msg = document.getElementById('contact-success');
+                        if (msg) msg.style.display = 'block';
+                        form.reset();
+                    })
+                    .catch(err => {
+                        console.error('Form submit error', err);
+                        alert('There was an error sending the form.');
+                    });
+                });
+            })();

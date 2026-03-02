@@ -6,29 +6,42 @@ let mouse = { x: 0, y: 0 };
 let targetRotation = { x: 0, y: 0 };
 let pointLight1, pointLight2; // Store light references for theme updates
 
-// Color palettes for different themes
+// Color palettes for different themes (neutral grey palette)
 const colorPalettes = {
     dark: {
         shapes: [
-            0xb44cff, // Primary purple
-            0x6b4a8f, // Dark purple
-            0xff006e, // Accent pink
-            0x39ff14, // Accent green
-            0xff6b35  // Accent orange
+            0xff00ff, // electric magenta
+            0x00f5ff, // neon cyan
+            0x8a2eff, // vibrant purple
+            0xff6b00, // hot orange
+            0x39ff14  // neon green
         ],
-        light1: 0xb44cff,
-        light2: 0x9966ff
+        light1: 0xffffff,   // pure white highlight
+        light2: 0xffd700,   // gold glow
+        settings: {
+            emissiveIntensity: 1.2,
+            opacity: 0.85,
+            shininess: 120,
+            lightIntensity: 2.2
+        }
     },
+
     light: {
         shapes: [
-            0x8b2fa3, // Darker purple
-            0x6b1f7f, // Even darker purple
-            0xd91e63, // Darker pink
-            0x2ecc71, // Darker green
-            0xe74c3c  // Darker orange
+            0x7f00ff, // deep violet
+            0x00d9ff, // electric sky
+            0xff1493, // neon pink
+            0xffae00, // vibrant amber
+            0x00ff9f  // aqua green
         ],
-        light1: 0x8b2fa3,
-        light2: 0x6b1f7f
+        light1: 0xffffff,
+        light2: 0xf0f0f0,
+        settings: {
+            emissiveIntensity: 1.6,
+            opacity: 1,
+            shininess: 150,
+            lightIntensity: 2.8
+        }
     }
 };
 
@@ -91,13 +104,16 @@ function createShapes() {
         const geometry = geometries[Math.floor(Math.random() * geometries.length)];
         const color = colors[Math.floor(Math.random() * colors.length)];
 
+        // Use MeshPhongMaterial and apply theme-specific visual weight
+        const themeSettings = colorPalettes[theme].settings || {};
         const material = new THREE.MeshPhongMaterial({
             color: color,
             emissive: color,
-            emissiveIntensity: 0.3,
-            wireframe: Math.random() > 0.5,
+            emissiveIntensity: themeSettings.emissiveIntensity ?? 0.3,
+            wireframe: Math.random() > 0.6,
             transparent: true,
-            opacity: 0.6
+            opacity: themeSettings.opacity ?? 0.6,
+            shininess: themeSettings.shininess ?? 30
         });
 
         const mesh = new THREE.Mesh(geometry, material);
@@ -127,16 +143,17 @@ function createShapes() {
     }
 
     // Add ambient light
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
     scene.add(ambientLight);
 
-    // Add point lights and store references
-    pointLight1 = new THREE.PointLight(colorPalettes[getCurrentTheme()].light1, 1, 100);
+    // Add point lights and store references (intensity varies by theme)
+    const palette = colorPalettes[getCurrentTheme()];
+    pointLight1 = new THREE.PointLight(palette.light1, palette.settings.lightIntensity, 120);
     pointLight1.position.set(5, 5, 5);
     scene.add(pointLight1);
 
-    pointLight2 = new THREE.PointLight(colorPalettes[getCurrentTheme()].light2, 1, 100);
-    pointLight2.position.set(-5, -5, 5);
+    pointLight2 = new THREE.PointLight(palette.light2, palette.settings.lightIntensity, 120);
+    pointLight2.position.set(-6, -4, 6);
     scene.add(pointLight2);
 }
 
@@ -144,23 +161,42 @@ function createShapes() {
 function updateThreeSceneColors() {
     const theme = getCurrentTheme();
     const palette = colorPalettes[theme];
-    
+
     // Update shape materials
     shapes.forEach(shape => {
         const shapeColors = palette.shapes;
-        // Randomize but keep consistent colors - just update to new palette
+        // Pick a new color from the palette for visual refresh
         const newColor = shapeColors[Math.floor(Math.random() * shapeColors.length)];
         shape.material.color.setHex(newColor);
         shape.material.emissive.setHex(newColor);
+        // Apply theme-weighted material properties
+        const s = palette.settings || {};
+        shape.material.emissiveIntensity = s.emissiveIntensity ?? shape.material.emissiveIntensity;
+        shape.material.opacity = s.opacity ?? shape.material.opacity;
+        shape.material.shininess = s.shininess ?? shape.material.shininess;
     });
-    
+
     // Update light colors
     if (pointLight1) {
         pointLight1.color.setHex(palette.light1);
+        pointLight1.intensity = palette.settings.lightIntensity;
     }
     if (pointLight2) {
         pointLight2.color.setHex(palette.light2);
+        pointLight2.intensity = palette.settings.lightIntensity;
     }
+}
+
+// Watch for theme attribute changes and update scene colors automatically
+const themeObserver = new MutationObserver((mutations) => {
+    mutations.forEach(m => {
+        if (m.type === 'attributes' && m.attributeName === 'data-theme') {
+            updateThreeSceneColors();
+        }
+    });
+});
+if (typeof document !== 'undefined' && document.documentElement) {
+    themeObserver.observe(document.documentElement, { attributes: true });
 }
 
 function onMouseMove(event) {
