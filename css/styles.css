@@ -702,8 +702,14 @@ section {
     color: var(--color-primary-light);
 }
 
-.project-btn {
+.project-button-group {
+    display: flex;
+    gap: var(--spacing-md);
     width: 100%;
+}
+
+.project-btn {
+    flex: 1;
     padding: var(--spacing-sm);
     background: transparent;
     border: 2px solid var(--color-primary);
@@ -712,12 +718,27 @@ section {
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-base);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-md);
 }
 
 .project-btn:hover {
     background: var(--gradient-primary);
     transform: translateY(-2px);
     box-shadow: var(--shadow-glow-primary);
+}
+
+.project-btn-secondary {
+    background: rgba(140, 140, 150, 0.08);
+    border-color: var(--color-primary);
+}
+
+.project-btn-secondary:hover {
+    background: var(--gradient-primary);
+    color: var(--color-text);
 }
 
 /* ===================================
@@ -1335,6 +1356,10 @@ section {
 [data-theme="light"] .project-btn {
     border-color: rgba(120,120,128,0.18);
     color: #1a1a1a;
+}
+
+[data-theme="light"] .project-btn-secondary {
+    background: rgba(120,120,128,0.06);
 }
 
 /* Modal */
