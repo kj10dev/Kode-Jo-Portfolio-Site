@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Portfolio of a junior developer specializing in Kotlin, Python, Web Design, UX/UI, and 3D development with Three.js">
+        content="Kode-Jo — portfolio: UX/UI, motion design, web development, 3D graphics and interactive experiences">
     <title>Kode-Jo | Creative Designer Developer</title>
-    <link rel="icon" type="image/svg+xml" href="assets/icons/Tabicon.svg">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/Logo_Kode-Jo.svg">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +27,7 @@
     <script src="js/main.js" defer></script>
 </head>
 
-<body>
+origin<body>
     <!-- Canvas for Three.js 3D Background -->
     <canvas id="three-canvas"></canvas>
 
@@ -38,6 +38,7 @@
             <ul class="nav-menu" id="navMenu">
                 <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+                <li class="nav-item"><a href="#career" class="nav-link">Career</a></li>
                 <li class="nav-item"><a href="#projects" class="nav-link">Projects</a></li>
                 <li class="nav-item"><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
@@ -84,6 +85,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">About <span class="gradient-text">Me</span></h2>
+                <p class="section-subtitle">I am<br><h2 class="section-title gradient-text">Kojo <span class="section-title">Ahyia-Osae</h2></p>
                 <p class="section-subtitle">Passionate about creating stunning digital experiences</p>
             </div>
 
@@ -153,6 +155,50 @@
         </div>
     </section>
 
+    <!-- Career Section -->
+    <section id="career" class="career">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Career <span class="gradient-text">Experience</span></h2>
+                <p class="section-subtitle">My professional journey</p>
+            </div>
+
+            <div class="career-timeline">
+                <div class="career-item">
+                    <div class="career-header">
+                        <h3 class="career-title">Servicing Agent, Prodigy Finance</h3>
+                        <span class="career-period">2023 - Present</span>
+                    </div>
+                    <p class="career-description">As a dedicated customer service professional, I specialize in educating clients about industry insights, potential risks, and tailored product offerings to empower informed decision-making. I actively engage with master's students, providing clear and accurate updates on their loan status, terms, and conditions while addressing inquiries and concerns promptly and professionally. Additionally, I excel in onboarding and troubleshooting for new and existing customers, ensuring seamless navigation of the mobile app and fostering a positive, stress-free experience.</p>
+                </div>
+
+                <div class="career-item">
+                    <div class="career-header">
+                        <h3 class="career-title">Designer, Joyful Jaws</h3>
+                        <span class="career-period">2023 - Present</span>
+                    </div>
+                    <p class="career-description">At Joyful Jaws, I assisted with the development of the branding name and logo, ensuring a cohesive and impactful visual identity. Additionally, I contributed to the website redesign, providing support with hosting setup and ongoing maintenance to ensure optimal performance and user experience.</p>
+                </div>
+
+                <div class="career-item">
+                    <div class="career-header">
+                        <h3 class="career-title">Customer Success, Luno</h3>
+                        <span class="career-period">2021 - 2023</span>
+                    </div>
+                    <p class="career-description">I educated clients on industry insights, potential risks, and tailored product offerings to help them make informed decisions. I delivered technical support through email, live chat, and outbound calls, ensuring prompt and effective solutions. I collaborated with cross-functional teams to resolve customer issues and mitigate complaints, enhancing overall satisfaction. Upholding strict confidentiality, I assisted with onboarding, verification, and app navigation, while providing tips on security and mobile app best practices to ensure a seamless and secure user experience.</p>
+                </div>
+
+                <div class="career-item">
+                    <div class="career-header">
+                        <h3 class="career-title">Junior Software Tester/Technical Support, HouseMe</h3>
+                        <span class="career-period">2019 - 2020</span>
+                    </div>
+                    <p class="career-description">I focused on ensuring flawless system performance through functional testing and provided technical support to resolve issues quickly. I mapped user journeys to enhance experiences, handled calls to assist customers, and managed user onboarding for a smooth introduction to our services.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Projects Section -->
     <section id="projects" class="projects">
         <div class="container">
@@ -186,14 +232,18 @@
                             <span class="tag">Figma</span>
                             <span class="tag">Framer</span>
                         </div>
-                        <button class="project-btn" data-modal="project1">View Details</button>
+                        <div class="project-button-group">
+                            <button class="project-btn" data-modal="project1">View Details</button>
+                            <a href="../../2025/jawsfamilydentistry/joyful-jaws.com" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-secondary">View Website</a>
+                        </div>
                     </div>
                 </article>
 
                 <article class="project-card" data-project="2">
                     <div class="project-gallery">
                         <div class="gallery-container">
-                            <span class="project-icon gallery-image">📱</span>
+                            <img src="./assets/projects/CSTK_1.webp" alt="Original Board Design" class="gallery-image">
+                            <img src="./assets/projects/CSTK_2.webp" alt="On-Site Design" class="gallery-image">
                             <div class="gallery-controls">
                                 <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
                                 <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
@@ -203,14 +253,12 @@
                         </div>
                     </div>
                     <div class="project-content">
-                        <h3 class="project-title">Kotlin Mobile App</h3>
+                        <h3 class="project-title">CSTK Board Design</h3>
                         <p class="project-description">
-                            Feature-rich Android application with clean architecture and modern UI
+                            This project was to redesign a poster for a company, maintaining the branding while applying a minimalistic emphasis.
                         </p>
                         <div class="project-tags">
-                            <span class="tag">Kotlin</span>
-                            <span class="tag">Android</span>
-                            <span class="tag">SQL</span>
+                            <span class="tag">Figma</span>
                         </div>
                         <button class="project-btn" data-modal="project2">View Details</button>
                     </div>
@@ -239,11 +287,133 @@
                             <span class="tag">JavaScript</span>
                             <span class="tag">WebGL</span>
                             <span class="tag">HTML & CSS</span>
-                            <span class="tag">3D</span>
+                            <span class="tag">3D Graphics</span>
+                        </div>
+                        <div class="project-button-group">
+                            <button class="project-btn" data-modal="project3">View Details</button>
+                            <a href="https://3dfuturistic-citythreejs.vercel.app/" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-secondary">View Website</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="project-card" data-project="4">
+                    <div class="project-gallery">
+                        <div class="gallery-container">
+                            <img src="./assets/projects/Littlefootprints_2.jpg" alt="Original Board Design" class="gallery-image">
+                            <img src="./assets/projects/Littlefootprints_1.jpg" alt="Board Re-Design" class="gallery-image">
+                            <img src="./assets/projects/LittleFootprints_3.jpeg" alt="Final Design Printed" class="gallery-image">
+                            <div class="gallery-controls">
+                                <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                                <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                                <div class="gallery-counter"><span class="current">1</span>/<span class="total">3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Little FootPrints Playschool & Aftercare Board Design</h3>
+                        <p class="project-description">
+                            A playful and accessible board design for a playschool featuring bold typography, friendly icons, and consistent branding
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">Figma</span>
                         </div>
                         <button class="project-btn" data-modal="project4">View Details</button>
                     </div>
                 </article>
+
+                <article class="project-card" data-project="5">
+                    <div class="project-gallery">
+                        <div class="gallery-container">
+                            <img src="./assets/projects/JawsFD_1.png" alt="Jaws Family Dentistry — homepage screenshot" class="gallery-image">
+                            <img src="./assets/projects/JawsFD_2.png" alt="Jaws Family Dentistry — services page screenshot" class="gallery-image">
+                            <div class="gallery-controls">
+                                <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                                <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                                <div class="gallery-counter"><span class="current">1</span>/<span class="total">2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Jaws Family Dentistry Website</h3>
+                        <p class="project-description">
+                            A modern, responsive dental practice website with advanced technology features, patient testimonials, and easy online appointment booking
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">HTML</span>
+                            <span class="tag">CSS</span>
+                            <span class="tag">Responsive Design</span>
+                            <span class="tag">UX/UI</span>
+                        </div>
+                        <div class="project-button-group">
+                            <button class="project-btn" data-modal="project5">View Details</button>
+                            <a href="https://www.jawsdentistry.co.za" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-secondary">View Website</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="project-card" data-project="6">
+                    <div class="project-gallery">
+                        <div class="gallery-container">
+                            <div class="gallery-controls">
+                                <img src="./assets/projects/Notion.png" alt="Notion cover" class="gallery-image">
+                                <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                                <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                                <div class="gallery-counter"><span class="current">1</span>/<span class="total">1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">UX/UI & Motion Graphics</h3>
+                        <p class="project-description">
+                            Strategic user interface design paired with dynamic motion design to create engaging, intuitive digital experiences.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">UX/UI</span>
+                            <span class="tag">Motion Design</span>
+                            <span class="tag">Figma</span>
+                            <span class="tag">GSAP</span>
+                        </div>
+                        <div class="project-button-group">
+                            <button class="project-btn" data-modal="project6">View Details</button>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-secondary">View More</a>
+                        </div>
+                    </div>
+                </article>
+
+                 <article class="project-card" data-project="7">
+                    <div class="project-gallery">
+                        <div class="gallery-container">
+                            <div class="gallery-controls">
+                                <img src="./assets/projects/Zuri-Studios.png" alt="Zuri Studios cover" class="gallery-image">
+                                <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                                <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                                <div class="gallery-counter"><span class="current">1</span>/<span class="total">1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Zuri-Studio</h3>
+                        <p class="project-description">
+                            Website design for a Design agency that focuses on strategic blend of design, technology, and performance — crafted to help ambitious brands stand out, scale, and succeed online.
+                        </p>
+                        <div class="project-tags">
+                            <span class="tag">HTML</span>
+                            <span class="tag">CSS</span>
+                            <span class="tag">Figma</span>
+                            <span class="tag">GSAP</span>
+                        </div>
+                        <div class="project-button-group">
+                            <button class="project-btn" data-modal="project6">View Details</button>
+                            <a href="https://www.zuri-studio.co.za" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-secondary">View Website</a>
+
+                        </div>
+                    </div>
+                </article>
+
             </div>
         </div>
     </section>
@@ -292,7 +462,8 @@
                         <span class="btn-text">Send Message</span>
                         <span class="btn-loading">Sending...</span>
                     </button>
-                    <div id="contact-success" style="display:none;color:var(--accent,green);margin-top:1rem;">Thank you — your message has been sent.</div>
+                    <div id="contact-success" style="display:none;color:var(--accent,green);margin-top:1rem;">Thank you
+                        — your message has been sent.</div>
                 </form>
 
                 <div class="contact-info">
@@ -345,7 +516,7 @@
         <div class="modal-overlay"></div>
         <div class="modal-content">
             <button class="modal-close">&times;</button>
-            <h2 class="modal-title">Interactive Design System</h2>
+            <h2 class="modal-title">Joyful Jaws - Website design</h2>
 
             <div class="modal-gallery">
                 <div class="gallery-container">
@@ -380,6 +551,11 @@
                     <span class="tag">Framer</span>
                 </div>
             </div>
+            <div class="modal-footer">
+                <div class="modal-actions">
+                    <a href="../../2025/jawsfamilydentistry/joyful-jaws.com" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-secondary">View Website</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -387,35 +563,31 @@
         <div class="modal-overlay"></div>
         <div class="modal-content">
             <button class="modal-close">&times;</button>
-            <h2 class="modal-title">Kotlin Mobile App</h2>
+            <h2 class="modal-title">CSTK Board Design</h2>
 
             <div class="modal-gallery">
                 <div class="gallery-container">
-                    <span class="project-icon gallery-image" style="font-size: 4rem;">📱</span>
+                    <img src="./assets/projects/CSTK_1.webp" alt="Original Board Design" class="gallery-image">
+                    <img src="./assets/projects/CSTK_2.webp" alt="On-Site Design" class="gallery-image">
                     <div class="gallery-controls">
                         <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
                         <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
-                        <div class="gallery-counter"><span class="current">1</span>/<span class="total">1</span></div>
+                        <div class="gallery-counter"><span class="current">1</span>/<span class="total">2</span></div>
                     </div>
                 </div>
             </div>
 
             <div class="modal-body">
-                <p>A feature-rich Android application built with Kotlin, showcasing modern architecture patterns and
-                    clean code principles.</p>
+                <p>A comprehensive redesign of a poster for a company, maintaining the branding while applying a minimalistic emphasis to create a modern and impactful visual presentation.</p>
                 <h3>Key Features</h3>
                 <ul>
-                    <li>MVVM architecture pattern</li>
-                    <li>Local database with Room</li>
-                    <li>Material Design 3 components</li>
-                    <li>Smooth animations and transitions</li>
+                    <li>Redesigned a poster for a company, maintaining the branding while applying a minimalistic emphasis</li>
+                    <li>Implemented a clean and modern design that effectively communicates the company's message</li>
+                    <li>Utilized design principles to create a visually appealing and impactful poster</li>
                 </ul>
                 <h3>Technologies</h3>
                 <div class="modal-tags">
-                    <span class="tag">Kotlin</span>
-                    <span class="tag">Android SDK</span>
-                    <span class="tag">SQLite</span>
-                    <span class="tag">Material Design</span>
+                    <span class="tag">Figma</span>
                 </div>
             </div>
         </div>
@@ -462,6 +634,11 @@
                     <span class="tag">3D</span>
                 </div>
             </div>
+            <div class="modal-footer">
+                <div class="modal-actions">
+                    <a href="https://3dfuturistic-citythreejs.vercel.app/" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-secondary">View Website</a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -469,13 +646,91 @@
         <div class="modal-overlay"></div>
         <div class="modal-content">
             <button class="modal-close">&times;</button>
-            <h2 class="modal-title">Jaws Family Dentistry</h2>
+            <h2 class="modal-title">Little FootPrints Playschool & Aftercare Board Design</h2>
 
             <div class="modal-gallery">
                 <div class="gallery-container">
-                    <img src="./assets/projects/3D city.png" alt="3D Futuristic City" class="gallery-image">
-                    <img src="./assets/projects/3D city.png" alt="3D Futuristic City" class="gallery-image">
+                    <img src="./assets/projects/Littlefootprints_2.jpg" alt="Original Board Design" class="gallery-image">
+                    <img src="./assets/projects/Littlefootprints_1.jpg" alt="Board Re-Design" class="gallery-image">
+                    <img src="./assets/projects/LittleFootprints_3.jpeg" alt="Final Design Printed" class="gallery-image">
+                    <div class="gallery-controls">
+                        <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                        <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                        <div class="gallery-counter"><span class="current">1</span>/<span class="total">3</span></div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="modal-body">
+                <p>A comprehensive board design for Little FootPrints Playschool featuring a playful yet professional aesthetic that appeals to both children and parents while maintaining strong brand identity.</p>
+                <h3>Key Features</h3>
+                <ul>
+                    <li>Utilized bold and clear typography to ensure readability and establish strong visual hierarchy throughout the design</li>
+                    <li>Designed playful and friendly icons to enhance accessibility while maintaining engagement and user-friendliness</li>
+                    <li>Maintained consistent branding through strategic palette selection and practical color choices that reflect the company's identity</li>
+                </ul>
+                <h3>Technologies</h3>
+                <div class="modal-tags">
+                    <span class="tag">Figma</span>
+                    <span class="tag">Design Systems</span>
+                    <span class="tag">Typography</span>
+                    <span class="tag">Color Theory</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="project5">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2 class="modal-title">Jaws Family Dentistry Website</h2>
+
+            <div class="modal-gallery">
+                <div class="gallery-container">
+                    <img src="./assets/projects/JawsFD_1.png" alt="Jaws Family Dentistry — homepage screenshot" class="gallery-image">
+                    <img src="./assets/projects/JawsFD_2.png" alt="Jaws Family Dentistry — services page screenshot" class="gallery-image">
+                    <div class="gallery-controls">
+                        <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
+                        <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
+                        <div class="gallery-counter"><span class="current">1</span>/<span class="total">2</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <p>A modern, responsive website for Jaws Family Dentistry highlighting services, patient testimonials, and easy online booking.</p>
+                <h3>Key Features</h3>
+                <ul>
+                    <li>Responsive, mobile-first layout</li>
+                    <li>Online appointment booking</li>
+                    <li>Patient testimonials & team profiles</li>
+                    <li>Clear services and contact pages</li>
+                </ul>
+                <h3>Technologies</h3>
+                <div class="modal-tags">
+                    <span class="tag">HTML5</span>
+                    <span class="tag">CSS3</span>
+                    <span class="tag">Responsive Design</span>
+                    <span class="tag">JavaScript</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="modal-actions">
+                    <a href="https://www.jawsdentistry.co.za" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-secondary">View Website</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="project6">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2 class="modal-title">Zuri-Studio</h2>
+
+            <div class="modal-gallery">
+                <div class="gallery-container">
                     <div class="gallery-controls">
                         <button class="gallery-nav gallery-prev" aria-label="Previous image">❮</button>
                         <button class="gallery-nav gallery-next" aria-label="Next image">❯</button>
@@ -485,31 +740,35 @@
             </div>
 
             <div class="modal-body">
-                <p>A real-time interactive 3D futuristic city using transformations,
-                    projections, lighting, shading, and texture mapping.
-                    The city will feature skyscrapers, neon billboards, flying vehicles,
-                    and glowing streetlights to showcase graphics techniques.
+                <p>Website design & development aswell as branding for a Design agency that focuses on strategic blend of design, technology, 
+                    and performance — crafted to help ambitious brands stand out, scale, and succeed online.
                 </p>
-                <h3>Key Features</h3>
+                <h3>Key Focus Areas</h3>
                 <ul>
-                    <li>Transformations</li>
-                    <li>Lighting</li>
-                    <li>Mapping</li>
-                    <li>Shading</li>
+                    <li>Interaction design and user experience optimization</li>
+                    <li>Design system creation and component libraries</li>
+                    <li>Micro-animations and motion principles</li>
+                    <li>Transition design for smooth user flows</li>
+                    <li>Accessibility and responsive design</li>
                 </ul>
                 <h3>Technologies</h3>
                 <div class="modal-tags">
-                    <span class="tag">Three.js</span>
+                    <span class="tag">Figma</span>
+                    <span class="tag">GSAP</span>
                     <span class="tag">JavaScript</span>
-                    <span class="tag">WebGL</span>
-                    <span class="tag">HTML & CSS</span>
-                    <span class="tag">3D</span>
+                    <span class="tag">CSS Animation</span>
+                    <span class="tag">Framer</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="modal-actions">
+                    <a href="#" target="_blank" rel="noopener noreferrer" class="project-btn project-btn-secondary">View Website</a>
                 </div>
             </div>
         </div>
     </div>
 
 
-    </body>
+</body>
 
-    </html>
+</html>
