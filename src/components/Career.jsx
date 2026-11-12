@@ -1,23 +1,18 @@
 const jobs = [
   {
-    title: 'Web designer, Jaws Family Dentistry',
+    title: 'Web Designer, Jaws Family Dentistry',
     period: 'Nov 2025 – Present',
     desc: 'Contributed to the branding and visual identity. Developed and deployed a fully responsive website optimised for all platforms. Directed social media engagement and marketing strategies through content creation.',
   },
   {
-    title: 'Servicing Agent, Prodigy Finance',
-    period: 'Apri 2023 – Aug 2025',
-    desc: "As a dedicated customer service professional, I specialize in educating clients about industry insights, potential risks, and tailored product offerings to empower informed decision-making. I actively engage with master's students, providing clear and accurate updates on their loan status, terms, and conditions while addressing inquiries and concerns promptly and professionally. Additionally, I excel in onboarding and troubleshooting for new and existing customers, ensuring seamless navigation of the mobile app and fostering a positive, stress-free experience.",
+    title: 'Technical Customer Support, Prodigy Finance',
+    period: 'Apr 2023 – Aug 2025',
+    desc: 'Facilitated onboarding and provided troubleshooting for new and existing customers. Provided technical support via various communication channels.',
   },
   {
-    title: 'Customer Success, Luno',
-    period: 'Aug 2021 – Feb 2023',
-    desc: 'I educated clients on industry insights, potential risks, and tailored product offerings to help them make informed decisions. I delivered technical support through email, live chat, and outbound calls, ensuring prompt and effective solutions. I collaborated with cross-functional teams to resolve customer issues and mitigate complaints, enhancing overall satisfaction. Upholding strict confidentiality, I assisted with onboarding, verification, and app navigation, while providing tips on security and mobile app best practices to ensure a seamless and secure user experience.',
-  },
-  {
-    title: 'Junior Software Tester/Technical Support, HouseMe',
-    period: 'Sept 2019 – Dec 2020',
-    desc: 'I focused on ensuring flawless system performance through functional testing and provided technical support to resolve issues quickly. I mapped user journeys to enhance experiences, handled calls to assist customers, and managed user onboarding for a smooth introduction to our services.',
+    title: 'Junior Software Tester, HouseMe',
+    period: 'Sept 2019 – July 2020',
+    desc: 'Executed functional testing to ensure software quality. Provided technical support to users. Mapped user journeys to understand and improve user experience.',
   },
 ]
 

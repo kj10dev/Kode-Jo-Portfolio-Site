@@ -67,6 +67,13 @@ export default function Hero() {
             >
               Get In Touch
             </a>
+            <a
+              href="/assets/cv/Kojo-Ahyia-Osae-CV.pdf"
+              download
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-medium text-sm glass hover:bg-white/10 text-[var(--color-text)] transition-all duration-200"
+            >
+              Download CV
+            </a>
           </div>
         </div>
       </div>
