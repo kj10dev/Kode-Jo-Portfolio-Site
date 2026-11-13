@@ -1,21 +1,121 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Kode-Jo is a designer and developer creating polished UX/UI experiences, responsive websites, motion graphics, and immersive 3D digital experiences for modern brands." />
-    <meta name="keywords" content="designer, developer, UX/UI, web design, motion graphics, 3D graphics, portfolio, responsive websites" />
-    <meta property="og:title" content="Kode-Jo | Designer & Developer" />
-    <meta property="og:description" content="Creative digital experiences blending UX/UI design, web development, motion, and 3D graphics." />
-    <meta property="og:type" content="website" />
-    <title>Kode-Jo | Designer & Developer | UX/UI, Web & 3D Experiences</title>
-    <link rel="icon" type="image/svg+xml" href="/assets/icons/Logo_Kode-Jo.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f6ead2">
+    <title>Kode-Jo City</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=DM+Sans:wght@400;500;600;700&display=swap">
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+<div id="stage" role="application" aria-label="Kode-Jo City, an explorable 3D portfolio"></div>
+
+<div id="loader">
+  <h1>Kode-Jo <span>City</span></h1>
+  <p id="loadmsg">Pouring the foundations...</p>
+  <div id="loadtrack"><div id="loadbar"></div></div>
+</div>
+
+<div class="hud" id="top">
+  <div class="pill" id="brand">
+    <b>KODE-JO <span>CITY</span></b>
+    <div id="quest"><span id="questText">0/22</span><div id="questTrack"><div id="questFill"></div></div></div>
+  </div>
+  <div id="tools">
+    <button class="pill ibtn" id="btnDay" aria-label="Switch to night" title="Day / night (N)">&#9728;</button>
+    <button class="pill ibtn" id="btnMap" aria-label="Open map and fast travel" title="Map (M)">&#128506;</button>
+    <button class="pill ibtn" id="btnTheme" aria-label="Switch light or dark interface" title="Light / dark interface">&#9680;</button>
+    <button class="pill ibtn" id="btnHelp" aria-label="Show controls" title="Help (H)">?</button>
+  </div>
+</div>
+<div class="hud pill" id="mini"><canvas id="miniCanvas" width="208" height="208" aria-hidden="true"></canvas></div>
+<div class="hud" id="side">
+  <button class="cta gold" id="btnCV">&#11015; Download CV</button>
+  <button class="cta primary" id="btnContact">&#9993; Contact me</button>
+</div>
+
+<div class="pill" id="prompt" hidden><kbd>E</kbd><span id="promptText"></span></div>
+<div id="keys">WASD / arrows move &middot; Shift run &middot; Space jump &middot; E interact &middot; drag to look &middot; N day/night &middot; M map</div>
+<div id="joy" aria-hidden="true"><div id="joyKnob"></div></div>
+<div id="acts">
+  <button class="abtn" id="btnAct" hidden>Enter</button>
+  <button class="abtn" id="btnJump" aria-label="Jump">Jump</button>
+</div>
+<div class="pill hud" id="ride" hidden><span id="rideText"></span><button class="cta ghost" id="rideExit">Exit ride</button></div>
+<div class="pill" id="toast" role="status" aria-live="polite"></div>
+
+<div class="modal" id="card" hidden role="dialog" aria-modal="true" aria-labelledby="cardTitle"><div class="sheet" id="cardSheet"></div></div>
+
+<div class="modal" id="contact" hidden role="dialog" aria-modal="true" aria-labelledby="contactTitle">
+  <div class="sheet" style="--rar:var(--protea)">
+    <div class="sheet-head">
+      <div class="sheet-ico">&#128230;</div>
+      <div><span class="tag">Supply drop</span><h2 id="contactTitle">Let&rsquo;s build your next move</h2></div>
+    </div>
+    <div class="sheet-body">
+      <p class="lead">Losing sales to a slow, hard-to-use website? Tell me about it and I will reply with ideas for making buying feel effortless.</p>
+      <div>
+        <label for="cemail">My email</label>
+        <div class="emailbox"><code id="cemail"></code><button class="chip" id="ccopyEmail" type="button">Copy</button></div>
+      </div>
+      <form id="cform" autocomplete="off">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div><label for="cname">Your name</label><input id="cname" type="text" placeholder="Thandi from Cape Cafe"></div>
+          <div><label for="cbiz">Your website (if you have one)</label><input id="cbiz" type="text" placeholder="yourbusiness.co.za"></div>
+          <div><label for="cmsg">What is frustrating you about it?</label><textarea id="cmsg" placeholder="Customers can't find our menu on their phones..."></textarea></div>
+        </div>
+      </form>
+      <p class="note" id="cnote">Copy the message, then paste it into an email to the address above. Opening your email app may not work from inside this page.</p>
+    </div>
+    <div class="sheet-foot">
+      <button class="cta primary" id="ccopyMsg" type="button">Copy my message</button>
+      <a class="cta gold" id="cmail" href="#" target="_blank" rel="noopener">Open email app</a>
+      <button class="cta ghost" id="ccancel" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="mapPanel" hidden role="dialog" aria-modal="true" aria-labelledby="mapTitle">
+  <div class="sheet" style="--rar:var(--tide)">
+    <div class="sheet-head"><div class="sheet-ico">&#128506;</div><div><span class="tag">Fast travel</span><h2 id="mapTitle">City map</h2></div></div>
+    <div class="sheet-body"><div class="maplist" id="mapList"></div></div>
+    <div class="sheet-foot"><button class="cta ghost" id="mapClose" type="button">Close</button></div>
+  </div>
+</div>
+
+<div class="modal" id="intro" hidden role="dialog" aria-modal="true" aria-labelledby="introTitle">
+  <div class="sheet" style="--rar:var(--sun)">
+    <div class="sheet-head" style="justify-content:center"><div><span class="tag">Welcome, traveller</span><h2 id="introTitle">Kode-Jo City</h2></div></div>
+    <div class="sheet-body">
+      <p class="lead" id="introLead"></p>
+      <div class="keys-grid" id="introKeys"></div>
+    </div>
+    <div class="sheet-foot"><button class="cta primary" id="introGo" type="button">Start exploring</button><button class="cta ghost" id="introMap" type="button">Open map</button></div>
+  </div>
+</div>
+
+<div class="modal" id="victory" hidden role="dialog" aria-modal="true" aria-labelledby="victoryTitle">
+  <div class="sheet" style="--rar:var(--sun)">
+    <div class="sheet-head" style="justify-content:center"><div><span class="tag">All landmarks found</span><h2 id="victoryTitle">Quest complete</h2></div></div>
+    <div class="sheet-body">
+      <p class="lead">You have seen the whole city. If a site like this could win customers for your business, let&rsquo;s talk.</p>
+    </div>
+    <div class="sheet-foot"><button class="cta primary" id="victoryContact" type="button">Team up</button><button class="cta ghost" id="victoryClose" type="button">Keep exploring</button></div>
+  </div>
+</div>
+
+<div id="nogl" hidden><div class="sheet" id="noglSheet" style="--rar:var(--tide)"></div></div>
+<noscript><p style="position:fixed;inset:0;z-index:99;margin:0;padding:24px;background:#0a0518;color:#eaf3f9;font-family:sans-serif">Kode-Jo City needs JavaScript. Kode-Jo is a designer and developer based in South Africa who builds fast, easy-to-use websites for small businesses.</p></noscript>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
