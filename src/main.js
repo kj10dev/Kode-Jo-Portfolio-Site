@@ -8,7 +8,7 @@ const CONFIG = {
   location: 'South Africa',
   email: 'kojoahyiaosae@gmail.com',
   phone: '+27 70 401 4410',
-  cvUrl: '',                          // <- optional: link to your own PDF CV; leave empty to download the generated one
+  cvUrl: '/Kode-Jo-CV.pdf',
   intro: 'Walk, run and explore. Every building is a chapter of my story. Find all 22 landmarks, then team up with me.',
 };
 
@@ -1435,7 +1435,12 @@ function cvCard() {
   closeAllExcept('card'); showModal('card');
 }
 async function downloadCV() {
-  if (CONFIG.cvUrl) { const a = document.createElement('a'); a.href = CONFIG.cvUrl; a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); return; }
+  if (CONFIG.cvUrl) {
+    const a = document.createElement('a'); a.href = CONFIG.cvUrl;
+    if (new URL(a.href, location.href).origin === location.origin) a.download = 'Kode-Jo-CV.pdf';
+    else { a.target = '_blank'; a.rel = 'noopener'; }
+    document.body.appendChild(a); a.click(); a.remove(); return;
+  }
   let dl = null; try { dl = await window.claude.use('downloads'); } catch (_) { dl = null; }
   if (!dl) { toast('Downloads are not available in this view, so here is my CV on screen.'); cvCard(); return; }
   try {
