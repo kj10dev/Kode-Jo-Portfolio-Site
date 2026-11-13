@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#f6ead2">
     <title>Kode-Jo City</title>
+    <link rel="icon" type="image/png" href="/kodejo-logo-primary.png">
+    <link rel="apple-touch-icon" href="/kodejo-logo-primary.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&family=DM+Sans:wght@400;500;600;700&display=swap">
@@ -13,7 +15,8 @@
 <div id="stage" role="application" aria-label="Kode-Jo City, an explorable 3D portfolio"></div>
 
 <div id="loader">
-  <h1>Kode-Jo <span>City</span></h1>
+  <img id="loaderLogoLight" src="/kodejo-logo-secondary.png" width="2000" height="743" alt="Kode-Jo — Web Design · Code">
+  <img id="loaderLogoDark" src="/kodejo-logo-inverted.png" width="784" height="768" alt="Kode-Jo — Web Design · Code">
   <p id="loadmsg">Pouring the foundations...</p>
   <div id="loadtrack"><div id="loadbar"></div></div>
 </div>
@@ -57,22 +60,86 @@
     <div class="sheet-body">
       <p class="lead">Losing sales to a slow, hard-to-use website? Tell me about it and I will reply with ideas for making buying feel effortless.</p>
       <div>
-        <label for="cemail">My email</label>
-        <div class="emailbox"><code id="cemail"></code><button class="chip" id="ccopyEmail" type="button">Copy</button></div>
+        <div class="field-label">My email addresses</div>
+        <div class="email-addresses" id="cemail"></div>
       </div>
-      <form id="cform" autocomplete="off">
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div><label for="cname">Your name</label><input id="cname" type="text" placeholder="Thandi from Cape Cafe"></div>
-          <div><label for="cbiz">Your website (if you have one)</label><input id="cbiz" type="text" placeholder="yourbusiness.co.za"></div>
-          <div><label for="cmsg">What is frustrating you about it?</label><textarea id="cmsg" placeholder="Customers can't find our menu on their phones..."></textarea></div>
+      <!-- Keep the named form and hidden form-name field so Netlify can detect it during the build. -->
+      <form id="cform" name="contactForm" action="/" method="POST" autocomplete="on" class="project-form" data-netlify="true" data-netlify-honeypot="company_fax">
+        <input type="hidden" name="form-name" value="contactForm">
+        <div class="hp-field" aria-hidden="true">
+          <label for="company_fax">Leave this field blank</label>
+          <input type="text" id="company_fax" name="company_fax" tabindex="-1" autocomplete="off">
         </div>
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" autocomplete="name" placeholder="Jane Doe" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" autocomplete="email" placeholder="jane@company.com" required>
+        </div>
+        <div class="form-group">
+          <label for="website">Current Website <span class="optional-tag">(Optional)</span></label>
+          <input type="url" id="website" name="website" autocomplete="url" placeholder="https://yourwebsite.com">
+        </div>
+        <div class="form-group">
+          <label for="service">What do you need help with?</label>
+          <select id="service" name="service" required>
+            <option value="" disabled selected>Select a service...</option>
+            <option value="new-website">New Website Design &amp; Build</option>
+            <option value="redesign">Website Redesign</option>
+            <option value="ecommerce">E-Commerce Store</option>
+            <option value="ui-ux">UI/UX Design Only</option>
+            <option value="maintenance">Ongoing Support / Maintenance</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="budget">Estimated Budget</label>
+          <select id="budget" name="budget" required>
+            <option value="" disabled selected>Select a budget range...</option>
+            <option value="under-500">Under $500</option>
+            <option value="500-1k">$500 – $1,000</option>
+            <option value="1k-5k">$1,000 – $5,000</option>
+            <option value="5k-10k">$5,000 – $10,000</option>
+            <option value="10k-plus">$10,000+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Project Details</label>
+          <textarea id="message" name="message" placeholder="Share your goals, target timeline, or any specific features you have in mind..." required></textarea>
+          <span class="helper-text">A few sentences is plenty to get started.</span>
+        </div>
+        <button type="submit" class="cta primary submit-btn">Send Project Inquiry</button>
+        <p class="form-status" id="formStatus" role="status" aria-live="polite" hidden></p>
+        <p class="privacy-note">Your information is kept strictly confidential and never shared.</p>
       </form>
-      <p class="note" id="cnote">Copy the message, then paste it into an email to the address above. Opening your email app may not work from inside this page.</p>
+      <p class="note" id="cnote">Project inquiries are submitted through Netlify. If sending fails, use one of the email options below.</p>
+    </div>
+    <div class="sheet-foot contact-foot">
+      <button class="cta primary" id="ccopyMsg" type="button">Copy my message</button>
+      <div class="contact-send-options">
+        <a class="cta gold" id="cmail" href="#" target="_blank" rel="noopener">Open email app</a>
+        <a class="cta ghost" id="cgmail" href="#" target="_blank" rel="noopener">Open Gmail</a>
+      </div>
+      <button class="cta ghost" id="ccancel" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="copyNotice" hidden role="dialog" aria-modal="true" aria-labelledby="copyNoticeTitle">
+  <div class="sheet" style="--rar:var(--fynbos)">
+    <div class="sheet-head">
+      <div class="sheet-ico">&#9989;</div>
+      <div><span class="tag">Ready to send</span><h2 id="copyNoticeTitle">Message copied</h2></div>
+    </div>
+    <div class="sheet-body">
+      <p class="lead">Your name, email, website, project type, budget, and details were copied together.</p>
+      <p>Finish sending with Gmail or any email app. Send to either <code id="copyNoticeEmails"></code>, review the draft, paste the copied message if needed, and press Send.</p>
     </div>
     <div class="sheet-foot">
-      <button class="cta primary" id="ccopyMsg" type="button">Copy my message</button>
-      <a class="cta gold" id="cmail" href="#" target="_blank" rel="noopener">Open email app</a>
-      <button class="cta ghost" id="ccancel" type="button">Close</button>
+      <a class="cta gold" id="copyNoticeMail" href="#" target="_blank" rel="noopener">Open email app</a>
+      <a class="cta primary" id="copyNoticeGmail" href="#" target="_blank" rel="noopener">Open Gmail</a>
+      <button class="cta ghost" id="copyNoticeBack" type="button">Back to form</button>
     </div>
   </div>
 </div>

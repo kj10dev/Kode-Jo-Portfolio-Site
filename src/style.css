@@ -45,11 +45,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 /* loader */
 #loader{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;background:radial-gradient(120% 90% at 50% 100%,var(--bay-2),var(--bay));text-align:center;transition:opacity .6s}
 #loader.done{opacity:0;pointer-events:none}
-#loader h1{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(38px,11vw,72px);line-height:1;letter-spacing:.01em;text-wrap:balance}
-#loader h1 span{color:var(--protea)}
+#loaderLogoLight{display:block;width:min(380px,78vw);height:auto;max-height:180px;object-fit:contain}
+#loaderLogoDark{display:none;width:min(220px,58vw);height:auto;max-height:220px;object-fit:contain}
+:root[data-theme="dark"] #loaderLogoLight{display:none}
+:root[data-theme="dark"] #loaderLogoDark{display:block}
 #loader p{margin:0;color:var(--muted);max-width:30ch}
 #loadtrack{width:min(260px,70vw);height:10px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}
 #loadbar{height:100%;width:6%;background:linear-gradient(90deg,var(--protea),var(--sun));border-radius:99px;transition:width .3s}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) #loaderLogoLight{display:none}
+  :root:not([data-theme="light"]) #loaderLogoDark{display:block}
+}
 
 /* top HUD */
 .hud{position:fixed;z-index:10;pointer-events:none}
@@ -70,7 +76,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{
 .cta.primary{background:var(--protea);color:var(--protea-ink)}
 .cta.gold{background:var(--sun);color:#2a1d00}
 .cta.ghost{background:var(--panel);color:var(--text);border:1px solid var(--line)}
-#mini{left:16px;top:calc(env(safe-area-inset-top,0px) + 82px);width:104px;height:104px;border-radius:14px;overflow:hidden;padding:0}
+#mini{left:16px;top:calc(env(safe-area-inset-top,0px) + 82px);width:125px;height:125px;border-radius:14px;overflow:hidden;padding:0}
 #mini canvas{display:block;width:100%;height:100%}
 
 /* bottom controls */
@@ -130,10 +136,34 @@ a{color:var(--tide)}
 
 /* forms */
 label{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-input,textarea{width:100%;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);font:inherit;padding:10px 12px;-webkit-user-select:text;user-select:text;min-height:44px}
+.field-label{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+input,textarea,select{width:100%;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);font:inherit;padding:10px 12px;-webkit-user-select:text;user-select:text;min-height:44px}
 textarea{min-height:92px;resize:vertical}
+.project-form{display:flex;flex-direction:column;gap:10px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.optional-tag,.helper-text,.privacy-note{font-size:12px;color:var(--muted)}
+.optional-tag{text-transform:none;letter-spacing:0;font-weight:400}
+.helper-text{margin-top:-2px}
+.privacy-note{margin:0;text-align:center}
+.form-status{margin:0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:13px}
+.form-status[data-state="pending"]{border-color:var(--sun)}
+.form-status[data-state="success"]{border-color:var(--fynbos);color:var(--fynbos)}
+.form-status[data-state="error"]{border-color:var(--protea);color:var(--protea)}
+.submit-btn{width:100%;justify-content:center;white-space:normal}
+.hp-field{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
 .emailbox{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border:1px dashed var(--sun);border-radius:12px;padding:10px 12px}
 .emailbox code{font-family:var(--mono);font-size:14px;color:var(--sun);word-break:break-all;flex:1 1 180px;-webkit-user-select:all;user-select:all}
+.email-addresses{display:flex;flex-direction:column;gap:8px}
+.email-contact{display:flex;align-items:center;gap:10px;border:1px dashed var(--sun);border-radius:12px;padding:8px 10px;min-width:0}
+.email-contact-details{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.email-contact-label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.email-contact code{font-family:var(--mono);font-size:14px;color:var(--sun);word-break:break-all;-webkit-user-select:all;user-select:all}
+.email-contact a{color:inherit;text-decoration:none}
+.email-contact a:hover{text-decoration:underline}
+.email-contact .chip{flex:none}
+.contact-send-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;flex:2 1 280px;min-width:0}
+.contact-send-options .cta{min-width:0;justify-content:center;text-align:center;white-space:normal;padding-inline:8px}
+#copyNoticeEmails{overflow-wrap:anywhere}
 
 /* map list */
 .maplist{display:flex;flex-direction:column;gap:6px}
@@ -159,7 +189,7 @@ textarea{min-height:92px;resize:vertical}
 
 @media (min-width:700px){
   .modal{align-items:center}
-  #mini{width:150px;height:150px}
+  #mini{width:180px;height:180px}
   #side{top:calc(env(safe-area-inset-top,0px) + 76px)}
   #mini{top:calc(env(safe-area-inset-top,0px) + 76px)}
   #brand b{font-size:22px}

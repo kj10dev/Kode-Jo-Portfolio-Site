@@ -44,3 +44,4 @@ public/          Static assets served from the site root
 ```
 
 Place static assets in `public/`; reference them by their root-relative path in the app.
+The Kode-Jo logo assets in `public/` supply the favicon and theme-aware loading screen.

@@ -6,7 +6,8 @@ const CONFIG = {
   fullName: 'Kojo Ahyia-Osae',
   role: 'Designer / Developer',
   location: 'South Africa',
-  email: 'kojoahyiaosae@gmail.com',
+  primaryEmail: 'kj10dev@gmail.com',
+  secondaryEmail: 'kojoahyiaosae@gmail.com',
   phone: '+27 70 401 4410',
   cvUrl: '/Kode-Jo-CV.pdf',
   intro: 'Walk, run and explore. Every building is a chapter of my story. Find all 22 landmarks, then team up with me.',
@@ -30,11 +31,11 @@ const POIS = [
   { id: 'about', ico: '⛰️', name: 'Table Mountain', tag: 'Summit · About me', rar: '#f5e9ff', color: '#f5e9ff', x: 0, z: -40, dx: 0, dz: -33, r: 7,
     title: 'Hi, I’m Kode-Jo',
     lead: 'I design and build websites that make buying feel effortless for small business owners.',
-    body: ['I’m a computer scientist who graduated in 2026, based in South Africa. I build product-focused front ends: clear navigation, fast pages and visuals that make a visitor think “I want this for my business”.',
+    body: ['I’m a computer scientist who graduated in 2025, based in South Africa. I build product-focused front ends: clear navigation, fast pages and visuals that make a visitor want to be part of and support the brand. Business owners think “I want this for my business”.',
            'Before tech I worked in customer service, technical support, social media and web development, so I think about the person on the other side of the screen first.'],
     chips: ['Web & app development', 'UX/UI design', '3D on the web', 'Customer-first'] },
 
-  { id: 'unisa', ico: '🎓', name: 'Unisa', tag: 'Education · Class of 2026', rar: '#ff8a3d', color: '#ff8a3d', x: -76, z: -26, dx: -76, dz: -16, r: 8,
+  { id: 'unisa', ico: '🎓', name: 'Unisa', tag: 'Education · Class of 2025', rar: '#ff8a3d', color: '#ff8a3d', x: -76, z: -26, dx: -76, dz: -16, r: 8,
     title: 'Computer Science at Unisa',
     lead: 'I completed my degree with the University of South Africa, a distance-learning university.',
     body: ['Studying remotely meant planning my own time, working through material alone and finishing what I started. That habit carries into every client project: clear plan, steady progress, delivered.'],
@@ -207,6 +208,7 @@ const C = h => T3 ? new T3.Color(h) : h;
 
 /* ---------- materials ---------- */
 const matCache = {};
+const buildingLayouts = Object.create(null);
 function std(hex, o) {
   o = o || {};
   const k = hex + '|' + (o.flat ? 1 : 0) + '|' + (o.rough || .85) + '|' + (o.emi || '') + '|' + (o.side || 0);
@@ -236,6 +238,46 @@ const boxG = (w, h, d) => new T3.BoxGeometry(w, h, d);
 function box(w, h, d, hex, x, y, z, parent, o) { return mesh(boxG(w, h, d), typeof hex === 'string' ? std(hex, o) : hex, x, y, z, parent); }
 function cyl(rt, rb, h, seg, hex, x, y, z, parent, o) { return mesh(new T3.CylinderGeometry(rt, rb, h, seg || 12), typeof hex === 'string' ? std(hex, o) : hex, x, y, z, parent); }
 function addCollider(cx, cz, w, d) { colliders.push({ x0: cx - w / 2, x1: cx + w / 2, z0: cz - d / 2, z1: cz + d / 2 }); }
+
+function buildingRandom(id, salt) {
+  let hash = 2166136261;
+  const value = id + ':' + salt;
+  for (let i = 0; i < value.length; i++) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0) / 4294967296;
+}
+function transformBuildingPoint(layout, x, z) {
+  const sx = x * layout.scaleX, sz = z * layout.scaleZ;
+  const c = Math.cos(layout.rotation), s = Math.sin(layout.rotation);
+  return { x: layout.x + sx * c + sz * s, z: layout.z - sx * s + sz * c };
+}
+function buildingLayout(o) {
+  const poi = POI[o.id];
+  if (!poi) throw new Error('Missing landmark for building: ' + o.id);
+
+  let x = o.x * 1.08;
+  if (o.x === -52) x -= 8;
+  else if (o.x === 52) x += 8;
+  else if (o.x === 76) x += 2;
+  else if (o.x === 0 && o.z < 44) x += 11;
+  if (o.id === 'skills') x = 44.5;
+
+  const layout = {
+    x: x + (buildingRandom(o.id, 'x') - .5) * 2.4,
+    z: o.z * 1.08 + (buildingRandom(o.id, 'z') - .5) * 2.2,
+    scaleX: .9 + buildingRandom(o.id, 'scale-x') * .2,
+    scaleY: .9 + buildingRandom(o.id, 'scale-y') * .28,
+    scaleZ: .9 + buildingRandom(o.id, 'scale-z') * .2,
+    rotation: (buildingRandom(o.id, 'rotation') - .5) * .16,
+    style: Math.floor(buildingRandom(o.id, 'style') * 3),
+  };
+  const entrance = transformBuildingPoint(layout, poi.dx - o.x, poi.dz - o.z);
+  poi.x = layout.x; poi.z = layout.z; poi.dx = entrance.x; poi.dz = entrance.z;
+  buildingLayouts[o.id] = layout;
+  return layout;
+}
 
 /* ---------- canvas textures ---------- */
 const DISPLAY_FONT = '"Righteous",Arial,sans-serif';
@@ -295,16 +337,41 @@ function wallMat(wall, win, cols, rows, W, H) {
 }
 /* a building shell with windows. returns a Group sitting on y=0 centred on x,z */
 function building(o) {
-  const g = new T3.Group(); g.position.set(o.x, 0, o.z);
+  const layout = buildingLayout(o);
+  const g = new T3.Group();
+  g.position.set(layout.x, 0, layout.z); g.rotation.y = layout.rotation;
+  g.scale.set(layout.scaleX, layout.scaleY, layout.scaleZ);
   const cols = o.cols || Math.max(2, Math.round(o.w / 2.6)), colsD = o.colsD || Math.max(2, Math.round(o.d / 2.6)), rows = o.rows || Math.max(1, Math.round(o.h / 3.2));
   const win = o.win || '#27465f';
   const front = wallMat(o.wall, win, cols, rows, 256, Math.min(512, 64 * rows + 64));
   const side = wallMat(o.wall, win, colsD, rows, 256, Math.min(512, 64 * rows + 64));
   const roof = std(o.roof || '#3b4650');
-  const m = new T3.Mesh(boxG(o.w, o.h, o.d), [side, side, roof, roof, front, front]);
+  let shell, materials;
+  if (layout.style === 2) {
+    shell = new T3.CylinderGeometry(o.w * .4, o.w * .5, o.h, 8, 1);
+    shell.scale(1, 1, o.d / o.w);
+    materials = [front, roof];
+  } else {
+    shell = boxG(o.w, o.h, o.d);
+    materials = [side, side, roof, roof, front, front];
+    if (layout.style === 1) {
+      const positions = shell.attributes.position;
+      for (let i = 0; i < positions.count; i++) {
+        if (positions.getY(i) > 0) {
+          positions.setX(i, positions.getX(i) * .78);
+          positions.setZ(i, positions.getZ(i) * .78);
+        }
+      }
+      positions.needsUpdate = true; shell.computeVertexNormals();
+    }
+  }
+  const m = new T3.Mesh(shell, materials);
   m.position.y = o.h / 2; m.castShadow = true; m.receiveShadow = true; g.add(m);
   scene.add(g);
-  if (o.collide !== false) addCollider(o.x, o.z, o.w + .6, o.d + .6);
+  if (o.collide !== false) {
+    const c = Math.abs(Math.cos(layout.rotation)), s = Math.abs(Math.sin(layout.rotation));
+    addCollider(layout.x, layout.z, c * o.w * layout.scaleX + s * o.d * layout.scaleZ + .6, s * o.w * layout.scaleX + c * o.d * layout.scaleZ + .6);
+  }
   return g;
 }
 
@@ -387,7 +454,7 @@ function applyTime(n, focus) {
   scene.getObjectByName('sky').position.copy(focus);
 }
 /* ============ WORLD: ground, roads, sea, mountain, trees, ambient life ============ */
-const WORLD = { x0: -94, x1: 94, z0: -58, z1: 76 };
+const WORLD = { x0: -98, x1: 98, z0: -58, z1: 78 };
 function paveMat(hex, speck, rep) {
   const t = canvasTex(256, 256, (g, w, h) => {
     g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h);
@@ -572,7 +639,8 @@ function buildLife() {
   }
   updaters.push((dt, t) => boats.forEach((b, i) => { b.position.y = -.1 + Math.sin(t * 1.1 + i) * .25; b.rotation.z = Math.sin(t * .9 + i) * .05; b.position.x += dt * .5 * (i % 2 ? -1 : 1); if (b.position.x > 120) b.position.x = -120; if (b.position.x < -120) b.position.x = 120; }));
   // cable car running from the base station to the summit
-  const cableA = new T3.Vector3(0, 10, -44), cableB = new T3.Vector3(0, 50.5, -100);
+  const cableBase = transformBuildingPoint(buildingLayouts.about, 0, -4);
+  const cableA = new T3.Vector3(cableBase.x, 10 * buildingLayouts.about.scaleY, cableBase.z), cableB = new T3.Vector3(0, 50.5, -100);
   const wire = new T3.Line(new T3.BufferGeometry().setFromPoints([cableA, cableB]), new T3.LineBasicMaterial({ color: 0x20262d })); scene.add(wire);
   const cab = new T3.Group(); box(2.6, 1.8, 2, '#ff3ea5', 0, -1.6, 0, cab); box(.12, 1.2, .12, '#20262d', 0, -.3, 0, cab);
   const cab2 = cab.clone(); scene.add(cab); scene.add(cab2);
@@ -657,7 +725,7 @@ function pagodaRoof(g, w, d, y, hex) {
 }
 
 function buildSummitStation() {
-  const g = building({ x: 0, z: -40, w: 12, h: 5, d: 7, wall: '#d9d3c7', roof: '#ff3ea5', rows: 1, cols: 4, colsD: 3 });
+  const g = building({ id: 'about', x: 0, z: -40, w: 12, h: 5, d: 7, wall: '#d9d3c7', roof: '#ff3ea5', rows: 1, cols: 4, colsD: 3 });
   sign('SUMMIT STATION', 9, 1.5, '#2a1450', '#f5e9ff', 0, 3.6, 3.56, g, { border: '#f5e9ff' });
   door(0, 1.4, 3.52, 2.4, 2.8, g);
   box(.9, 10, .9, '#39424d', 0, 5, -4, g); // pylon holding the cable
@@ -667,7 +735,7 @@ function buildSummitStation() {
 }
 
 function buildUnisa() {
-  const g = building({ x: -76, z: -26, w: 22, h: 9, d: 14, wall: '#f5e9ff', roof: '#5b6672', win: '#2b4a66', cols: 8, rows: 2 });
+  const g = building({ id: 'unisa', x: -76, z: -26, w: 22, h: 9, d: 14, wall: '#f5e9ff', roof: '#5b6672', win: '#2b4a66', cols: 8, rows: 2 });
   for (let i = 0; i < 8; i++) cyl(.55, .6, 8, 10, '#f6f2e8', -9.1 + i * 2.6, 4, 8.3, g);
   box(21.6, .7, 3, '#cfc6b3', 0, 8.3, 8.4, g);
   const ped = box(8, 2.2, 1, '#f6f2e8', 0, 9.9, 7.9, g); ped.castShadow = true;
@@ -676,14 +744,14 @@ function buildUnisa() {
   box(4, 18, 4, '#d9d1be', -3, 9, -3, g);
   box(5, 1.2, 5, '#5b6672', -3, 18.6, -3, g);
   const clock = new T3.Mesh(new T3.CircleGeometry(1.5, 20), new T3.MeshBasicMaterial({ color: 0xfff5d6 })); clock.position.set(-3, 15, -.97); g.add(clock);
-  // class-of-2026 banner
-  sign('CLASS OF 2026', 9, 1.4, '#ff8a3d', '#0a0518', 8, 2.2, 8.9, g, { size: 56 });
+  // class-of-2025 banner
+  sign('CLASS OF 2025', 9, 1.4, '#ff8a3d', '#0a0518', 8, 2.2, 8.9, g, { size: 56 });
   // satellite dish: learning from anywhere
   const dish = new T3.Mesh(new T3.SphereGeometry(1.6, 12, 8, 0, TAU, 0, 1.2), std('#e9edf2', { side: T3.DoubleSide })); dish.position.set(8, 10.4, 0); dish.rotation.set(.6, 0, -.5); g.add(dish); box(.2, 1.4, .2, '#8a949e', 8, 9.6, 0, g);
 }
 
 function buildSelfTaught() {
-  const g = building({ x: -76, z: 20, w: 10, h: 5, d: 9, wall: '#c9a27a', roof: '#6b4a2f', win: '#3a3a32', cols: 4, colsD: 3, rows: 1 });
+  const g = building({ id: 'self', x: -76, z: 20, w: 10, h: 5, d: 9, wall: '#c9a27a', roof: '#6b4a2f', win: '#3a3a32', cols: 4, colsD: 3, rows: 1 });
   const roof = new T3.Mesh(new T3.ConeGeometry(8.6, 3.4, 4), std('#8c3f3a')); roof.position.y = 6.7; roof.rotation.y = Math.PI / 4; roof.scale.set(1, 1, .9); roof.castShadow = true; g.add(roof);
   sign('SELF-TAUGHT LAB', 7.2, 1.2, '#2a2118', '#f5e9ff', 0, 3.7, 4.56, g, { size: 50 });
   door(0, 1.3, 4.53, 1.8, 2.6, g, '#4a2f1d');
@@ -697,7 +765,7 @@ function buildSelfTaught() {
 }
 
 function buildLuno() {
-  const g = building({ x: -28, z: -24, w: 10, h: 30, d: 10, wall: '#2a1450', roof: '#150a2e', win: '#7fb5e6', cols: 4, colsD: 4, rows: 9 });
+  const g = building({ id: 'luno', x: -28, z: -24, w: 10, h: 30, d: 10, wall: '#2a1450', roof: '#150a2e', win: '#7fb5e6', cols: 4, colsD: 4, rows: 9 });
   box(10.4, .6, 10.4, '#3ef0ff', 0, 15, 0, g); box(10.4, .6, 10.4, '#3ef0ff', 0, 24, 0, g);
   sign('FINTECH TOWER', 8, 1.5, '#0a0518', '#3ef0ff', 0, 3.5, 5.06, g, { border: '#3ef0ff' });
   door(0, 1.5, 5.04, 2.6, 3, g);
@@ -709,7 +777,7 @@ function buildLuno() {
 }
 
 function buildProdigy() {
-  const g = building({ x: -28, z: 22, w: 12, h: 12, d: 9, wall: '#e9edf2', roof: '#59677a', win: '#4f7aa3', cols: 5, colsD: 4, rows: 3 });
+  const g = building({ id: 'prodigy', x: -28, z: 22, w: 12, h: 12, d: 9, wall: '#e9edf2', roof: '#59677a', win: '#4f7aa3', cols: 5, colsD: 4, rows: 3 });
   for (let i = 0; i < 4; i++) cyl(.45, .5, 5.2, 10, '#ffffff', -3.9 + i * 2.6, 2.6, 5, g);
   box(11, .5, 2.4, '#c9d2dc', 0, 5.3, 4.9, g);
   sign('STUDENT FINANCE', 8.4, 1.4, '#2a1450', '#ffffff', 0, 7.2, 4.56, g, { border: '#3ef0ff', size: 54 });
@@ -722,7 +790,7 @@ function buildProdigy() {
 }
 
 function buildSupport() {
-  const g = building({ x: -30, z: 60, w: 8, h: 6, d: 7, wall: '#2a1450', roof: '#150a2e', win: '#9fd6ff', cols: 3, colsD: 3, rows: 2 });
+  const g = building({ id: 'support', x: -30, z: 60, w: 8, h: 6, d: 7, wall: '#2a1450', roof: '#150a2e', win: '#9fd6ff', cols: 3, colsD: 3, rows: 2 });
   sign('TECH SUPPORT', 6.6, 1.2, '#0a0518', '#3ef0ff', 0, 3.4, 3.56, g, { size: 56, border: '#3ef0ff' });
   door(0, 1.3, 3.54, 1.8, 2.6, g);
   // headset on the roof
@@ -737,7 +805,7 @@ function buildSupport() {
 function sphereAt(x, y, z, r, hex, parent) { return mesh(new T3.SphereGeometry(r, 10, 8), std(hex), x, y, z, parent); }
 
 function buildTricore() {
-  const g = building({ x: 76, z: 20, w: 16, h: 6, d: 12, wall: '#1f1040', roof: '#26303d', win: '#4d6a86', cols: 6, colsD: 4, rows: 1 });
+  const g = building({ id: 'tricore', x: 76, z: 20, w: 16, h: 6, d: 12, wall: '#1f1040', roof: '#26303d', win: '#4d6a86', cols: 6, colsD: 4, rows: 1 });
   const rg = new T3.Group(); rg.position.y = 6.2; g.add(rg); pagodaRoof(rg, 16, 12, 0, '#d6455f');
   sign('TRICORE MMA', 11, 2, '#d6455f', '#ffffff', 0, 4.1, 6.06, g, { size: 78, border: '#ffffff' });
   door(0, 1.5, 6.04, 3, 3, g);
@@ -746,11 +814,12 @@ function buildTricore() {
   for (let i = 0; i < 3; i++) { box(.08, 2, .08, '#8a949e', -5.4 + i * 1.8, 5.4, 7.6, g); const bag = cyl(.5, .5, 1.8, 10, i % 2 ? '#ff3ea5' : '#f5e9ff', -5.4 + i * 1.8, 3.9, 7.6, g); updaters.push((dt, t) => { bag.rotation.z = Math.sin(t * 1.6 + i) * .08; }); }
   box(.15, 5.6, .15, '#8a949e', -6.2, 2.8, 7.6, g); box(.15, 5.6, .15, '#8a949e', -.4, 2.8, 7.6, g); box(6, .15, .15, '#8a949e', -3.3, 5.5, 7.6, g);
   // boxing ring beside the gym
-  const ring = new T3.Group(); ring.position.set(90, 0, 14); scene.add(ring);
+  const ringPosition = transformBuildingPoint(buildingLayouts.tricore, 10, -12);
+  const ring = new T3.Group(); ring.position.set(ringPosition.x, 0, ringPosition.z); scene.add(ring);
   box(7, .5, 7, '#1a1028', 0, .25, 0, ring); box(6.4, .1, 6.4, '#3ef0ff', 0, .55, 0, ring);
   [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(c => { cyl(.14, .14, 2.4, 8, '#e9edf2', c[0] * 3.1, 1.7, c[1] * 3.1, ring); });
   [1.3, 1.9, 2.5].forEach((y, k) => { const rc = ['#ff3ea5', '#ffffff', '#ff3ea5'][k]; box(6.2, .07, .07, rc, 0, y, -3.1, ring); box(6.2, .07, .07, rc, 0, y, 3.1, ring); box(.07, .07, 6.2, rc, -3.1, y, 0, ring); box(.07, .07, 6.2, rc, 3.1, y, 0, ring); });
-  addCollider(90, 14, 7.6, 7.6);
+  addCollider(ring.position.x, ring.position.z, 7.6, 7.6);
 }
 
 function buildKaizen() {
@@ -774,7 +843,7 @@ function buildKaizen() {
 }
 
 function buildRoom() {
-  const g = building({ x: 28, z: -24, w: 14, h: 8, d: 12, wall: '#eef0f4', roof: '#cfd5de', win: '#cfd8e3', cols: 3, colsD: 3, rows: 1 });
+  const g = building({ id: 'room', x: 28, z: -24, w: 14, h: 8, d: 12, wall: '#eef0f4', roof: '#cfd5de', win: '#cfd8e3', cols: 3, colsD: 3, rows: 1 });
   [['#ff3ea5', -4.4], ['#3ef0ff', 0], ['#f5e9ff', 4.4]].forEach((a, i) => {
     box(3.2, 3.6, .15, '#1a232d', a[1], 4.4, 6.06, g);
     const art = canvasTex(128, 144, (c, w, h) => { c.fillStyle = a[0]; c.fillRect(0, 0, w, h); c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.arc(w * (.3 + i * .2), h * .4, 30, 0, TAU); c.fill(); c.fillStyle = 'rgba(43,29,20,.5)'; c.fillRect(0, h * .65, w, h * .35); });
@@ -786,17 +855,35 @@ function buildRoom() {
 }
 
 function buildZuri() {
-  const g = building({ x: 28, z: 22, w: 11, h: 8, d: 9, wall: '#2a1450', roof: '#123826', win: '#cfe8d6', cols: 4, colsD: 3, rows: 2 });
+  const g = building({ id: 'zuri', x: 28, z: 22, w: 11, h: 8, d: 9, wall: '#2a1450', roof: '#123826', win: '#cfe8d6', cols: 4, colsD: 3, rows: 2 });
   box(11.4, .6, 9.4, '#ff3ea5', 0, 8.3, 0, g);
   awning(0, 3.1, 5.2, 7, 1.6, '#ff3ea5', '#fff3e0', g, 7);
   sign('ZURI STUDIO', 7.4, 1.5, '#ff3ea5', '#ffffff', 0, 6.2, 4.56, g, { size: 66 });
   door(0, 1.4, 4.54, 2.2, 2.8, g);
   // leaf cut-outs
   [-4.2, 4.2].forEach(x => { const lf = new T3.Mesh(new T3.SphereGeometry(.9, 8, 6), std('#9dff4a')); lf.scale.set(1, 1.6, .3); lf.position.set(x, 3, 4.6); lf.rotation.z = x > 0 ? -.5 : .5; g.add(lf); });
+  const auraMaterial = new T3.MeshBasicMaterial({ color: 0x9dff4a, transparent: true, opacity: .65, blending: T3.AdditiveBlending, depthWrite: false });
+  const aura = new T3.Mesh(new T3.TorusGeometry(5.5, .18, 8, 40), auraMaterial); aura.rotation.x = Math.PI / 2; aura.position.y = 9.5; g.add(aura);
+  const groundMaterial = new T3.MeshBasicMaterial({ color: 0x9dff4a, transparent: true, opacity: .24, blending: T3.AdditiveBlending, depthWrite: false, side: T3.DoubleSide });
+  const groundRing = new T3.Mesh(new T3.RingGeometry(6.7, 7.3, 48), groundMaterial); groundRing.rotation.x = -Math.PI / 2; groundRing.position.y = .16; g.add(groundRing);
+  const ctaLight = new T3.PointLight(0x9dff4a, 2.2, 30, 2); ctaLight.position.set(0, 10, 0); g.add(ctaLight);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    auraMaterial.opacity = .65; groundMaterial.opacity = .24;
+  } else {
+    updaters.push((dt, t) => {
+      const pulse = (1 + Math.sin(t * TAU / 2.8)) / 2;
+      const scale = .97 + pulse * .06;
+      aura.scale.set(scale, scale, scale);
+      auraMaterial.opacity = .4 + pulse * .35;
+      groundMaterial.opacity = .14 + pulse * .16;
+      ctaLight.intensity = 1.6 + pulse * 1.2;
+    });
+  }
+  g.userData.onClick = () => openPOI('zuri'); clickables.push(g);
 }
 
 function buildSaas() {
-  const g = building({ x: 76, z: -26, w: 12, h: 9, d: 10, wall: '#1f1040', roof: '#150a2e', win: '#6f7bb8', cols: 4, colsD: 3, rows: 2 });
+  const g = building({ id: 'saas', x: 76, z: -26, w: 12, h: 9, d: 10, wall: '#1f1040', roof: '#150a2e', win: '#6f7bb8', cols: 4, colsD: 3, rows: 2 });
   const draw = [
     (c, w, h) => { c.fillStyle = '#fff'; c.fillRect(0, 0, w, h); c.fillStyle = '#ff8a3d'; c.fillRect(8, 8, w - 16, 14); c.fillStyle = '#cfd5de'; for (let i = 0; i < 6; i++) c.fillRect(8, 32 + i * 14, w - 16 - (i % 3) * 20, 7); },
     (c, w, h) => { c.fillStyle = '#2a1450'; c.fillRect(0, 0, w, h); c.fillStyle = '#9dff4a'; c.fillRect(10, 10, 50, 10); c.fillStyle = '#eaf3f9'; for (let i = 0; i < 5; i++) { c.fillRect(10, 30 + i * 16, w - 20, 8); } c.fillStyle = '#f5e9ff'; c.fillRect(w - 50, h - 22, 40, 12); },
@@ -813,7 +900,7 @@ function buildSaas() {
 }
 
 function buildKfc() {
-  const g = building({ x: 30, z: 60, w: 12, h: 6, d: 9, wall: '#f4f1ea', roof: '#c92a3e', win: '#7aa2c2', cols: 4, colsD: 3, rows: 1 });
+  const g = building({ id: 'kfc', x: 30, z: 60, w: 12, h: 6, d: 9, wall: '#f4f1ea', roof: '#c92a3e', win: '#7aa2c2', cols: 4, colsD: 3, rows: 1 });
   box(12.2, 1.6, 9.2, '#d6354a', 0, 5.2, 0, g);
   awning(0, 3.6, 5.2, 11, 2, '#d6354a', '#ffffff', g, 10);
   sign('FRIED CHICKEN', 8, 1.4, '#ffffff', '#c92a3e', 0, 5.4, 4.62, g, { size: 60, border: '#c92a3e' });
@@ -838,7 +925,7 @@ function neonText(text, hex) {
 }
 /* ---------- experience, certificate and skill landmarks ---------- */
 function buildFlyRank() {
-  const g = building({ x: -52, z: -24, w: 10, h: 16, d: 10, wall: '#1d2a4a', roof: '#0c1426', win: '#3ef0ff', cols: 4, colsD: 4, rows: 5 });
+  const g = building({ id: 'flyrank', x: -52, z: -24, w: 10, h: 16, d: 10, wall: '#1d2a4a', roof: '#0c1426', win: '#3ef0ff', cols: 4, colsD: 4, rows: 5 });
   sign('FLYRANK AI', 8.2, 1.3, '#0a0518', '#3ef0ff', 0, 12.6, 5.06, g, { border: '#3ef0ff', size: 56 });
   door(0, 1.4, 5.04, 2.4, 2.8, g);
   const scr = box(5, 3, .1, glow('#3ef0ff', 1.3), 0, 7.4, 5.06, g, { unique: true }); scr.castShadow = false;
@@ -849,7 +936,7 @@ function buildFlyRank() {
 }
 
 function buildWorkingAnts() {
-  const g = building({ x: -52, z: 20, w: 10, h: 6, d: 9, wall: '#7a3b2e', roof: '#3b2a24', win: '#ffd98a', cols: 4, colsD: 3, rows: 2 });
+  const g = building({ id: 'workingants', x: -52, z: 20, w: 10, h: 6, d: 9, wall: '#7a3b2e', roof: '#3b2a24', win: '#ffd98a', cols: 4, colsD: 3, rows: 2 });
   sign('WORKING ANTS', 8.4, 1.3, '#1a0f0a', '#ffd98a', 0, 5, 4.56, g, { border: '#ff8a3d', size: 50 });
   awning(0, 3.2, 5.0, 8, 2, '#ff3ea5', '#ffd98a', g, 8);
   door(0, 1.3, 4.53, 1.8, 2.6, g, '#2a1810');
@@ -857,7 +944,7 @@ function buildWorkingAnts() {
 }
 
 function buildMarklin() {
-  const g = building({ x: -52, z: 60, w: 10, h: 7, d: 10, wall: '#f0e2c8', roof: '#8c3f3a', win: '#27465f', cols: 4, colsD: 4, rows: 2 });
+  const g = building({ id: 'marklin', x: -52, z: 60, w: 10, h: 7, d: 10, wall: '#f0e2c8', roof: '#8c3f3a', win: '#27465f', cols: 4, colsD: 4, rows: 2 });
   const roof = new T3.Mesh(new T3.ConeGeometry(7.6, 3.2, 4), std('#8c3f3a')); roof.position.y = 8.6; roof.rotation.y = Math.PI / 4; roof.castShadow = true; g.add(roof);
   sign('WILLKOMMEN', 7.6, 1.2, '#1a2a4a', '#ffd98a', 0, 4.4, 5.06, g, { size: 50 });
   door(0, 1.4, 5.04, 2.4, 2.8, g, '#5b2a1a');
@@ -872,7 +959,7 @@ function buildMarklin() {
 }
 
 function buildHockey() {
-  const g = building({ x: 0, z: -24, w: 12, h: 5, d: 8, wall: '#dfe9f2', roof: '#2b3a4a', win: '#3ef0ff', cols: 5, colsD: 3, rows: 1 });
+  const g = building({ id: 'hockey', x: 0, z: -24, w: 12, h: 5, d: 8, wall: '#dfe9f2', roof: '#2b3a4a', win: '#3ef0ff', cols: 5, colsD: 3, rows: 1 });
   sign('HOCKEY', 7, 1.2, '#0a0518', '#ff8a3d', 0, 4.1, 4.06, g, { size: 56 });
   door(0, 1.4, 4.04, 2.4, 2.8, g);
   // ice rink in front of the clubhouse
@@ -885,7 +972,7 @@ function buildHockey() {
 }
 
 function buildLazone() {
-  const g = building({ x: 52, z: -24, w: 10, h: 8, d: 10, wall: '#2a1450', roof: '#150a2e', win: '#ff3ea5', cols: 4, colsD: 4, rows: 2 });
+  const g = building({ id: 'lazone', x: 52, z: -24, w: 10, h: 8, d: 10, wall: '#2a1450', roof: '#150a2e', win: '#ff3ea5', cols: 4, colsD: 4, rows: 2 });
   sign('LAZONE LIVE', 9, 1.6, '#0a0518', '#ff3ea5', 0, 6.4, 5.06, g, { border: '#ff3ea5', size: 60 });
   door(0, 1.4, 5.04, 2.6, 2.8, g);
   box(8, .4, 3, '#ffd98a', 0, .2, 9, g, { flat: true });
@@ -899,7 +986,7 @@ function buildLazone() {
 }
 
 function buildHouseme() {
-  const g = building({ x: 52, z: 22, w: 10, h: 7, d: 10, wall: '#1f3a2a', roof: '#0f1d15', win: '#9dff4a', cols: 4, colsD: 4, rows: 2 });
+  const g = building({ id: 'houseme', x: 52, z: 22, w: 10, h: 7, d: 10, wall: '#1f3a2a', roof: '#0f1d15', win: '#9dff4a', cols: 4, colsD: 4, rows: 2 });
   sign('BUG LAB', 7.6, 1.3, '#0a0518', '#9dff4a', 0, 5.8, 5.06, g, { border: '#9dff4a', size: 56 });
   door(0, 1.4, 5.04, 2.4, 2.8, g);
   box(3.6, 1.6, .12, glow('#9dff4a', 1.1), 0, 3.6, 5.1, g, { unique: true }).castShadow = false;
@@ -911,7 +998,7 @@ function buildHouseme() {
 }
 
 function buildCerts() {
-  const g = building({ x: 0, z: 60, w: 10, h: 6, d: 10, wall: '#f5e9ff', roof: '#2b1d4f', win: '#ffd98a', cols: 4, colsD: 4, rows: 2 });
+  const g = building({ id: 'certs', x: 0, z: 60, w: 10, h: 6, d: 10, wall: '#f5e9ff', roof: '#2b1d4f', win: '#ffd98a', cols: 4, colsD: 4, rows: 2 });
   sign('CERTIFIED', 7.6, 1.3, '#2a1450', '#ffd98a', 0, 4.4, 5.06, g, { border: '#ffd98a', size: 56 });
   door(0, 1.4, 5.04, 2.4, 2.8, g);
   for (let i = 0; i < 5; i++) {
@@ -928,7 +1015,7 @@ function buildCerts() {
 }
 
 function buildSkills() {
-  const g = building({ x: 52, z: 60, w: 8, h: 10, d: 8, wall: '#1d2a4a', roof: '#0c1426', win: '#f5e9ff', cols: 3, colsD: 3, rows: 3 });
+  const g = building({ id: 'skills', x: 52, z: 60, w: 8, h: 10, d: 8, wall: '#1d2a4a', roof: '#0c1426', win: '#f5e9ff', cols: 3, colsD: 3, rows: 3 });
   sign('TOP SKILLS', 6.8, 1.2, '#0a0518', '#f5e9ff', 0, 8.6, 4.06, g, { border: '#f5e9ff', size: 50 });
   door(0, 1.4, 4.04, 2.2, 2.8, g);
   for (const y of [3.2, 6.2]) { const r = new T3.Mesh(new T3.TorusGeometry(4.6, .14, 8, 28), glow('#3ef0ff', 1.1)); r.rotation.x = Math.PI / 2; r.position.y = y; g.add(r); }
@@ -941,9 +1028,15 @@ function buildSkills() {
 }
 
 function buildNeon() {
-  [['LUNO', '#3ef0ff', -28, 19.5, -18.8, 6.2, 1.9], ['ZURI', '#ff3ea5', 28, 11.2, 26.75, 5.2, 1.6], ['TRICORE', '#9dff4a', 76, 10.6, 26.4, 6.2, 1.9]].forEach(n => {
-    const m = new T3.Mesh(new T3.PlaneGeometry(n[5], n[6]), new T3.MeshBasicMaterial({ map: neonText(n[0], n[1]), transparent: true, depthWrite: false, fog: false }));
-    m.position.set(n[2], n[3], n[4]); scene.add(m);
+  [
+    { id: 'luno', text: 'LUNO', color: '#3ef0ff', y: 19.5, z: 5.2, w: 6.2, h: 1.9 },
+    { id: 'zuri', text: 'ZURI', color: '#ff3ea5', y: 11.2, z: 4.75, w: 5.2, h: 1.6 },
+    { id: 'tricore', text: 'TRICORE', color: '#9dff4a', y: 10.6, z: 6.4, w: 6.2, h: 1.9 },
+  ].forEach(n => {
+    const layout = buildingLayouts[n.id], pos = transformBuildingPoint(layout, 0, n.z);
+    const m = new T3.Mesh(new T3.PlaneGeometry(n.w, n.h), new T3.MeshBasicMaterial({ map: neonText(n.text, n.color), transparent: true, depthWrite: false, fog: false }));
+    m.position.set(pos.x, n.y * layout.scaleY, pos.z); m.rotation.y = layout.rotation;
+    m.scale.set(layout.scaleX, layout.scaleY, 1); scene.add(m);
   });
 }
 /* ============ LANDMARKS (part 2): Stack Wheel + supply drop ============ */
@@ -1352,29 +1445,107 @@ function showIntro() {
 
 /* ---------- contact ---------- */
 function msgText() {
-  const n = $('cname').value.trim(), b = $('cbiz').value.trim(), m = $('cmsg').value.trim();
-  return 'Hi ' + CONFIG.name + ',\n\nMy name is ' + (n || '[your name]') + '. My website: ' + (b || '(none yet)') + '.\n\n' + (m || 'Here is what is frustrating me about it: ...') + '\n\nThanks!';
+  const service = $('service').value ? $('service').selectedOptions[0].textContent : '[not selected]';
+  const budget = $('budget').value ? $('budget').selectedOptions[0].textContent : '[not selected]';
+  return [
+    'Hi ' + CONFIG.name + ',',
+    '',
+    'Project inquiry',
+    'Name: ' + ($('name').value.trim() || '[your name]'),
+    'Email: ' + ($('email').value.trim() || '[your email]'),
+    'Current website: ' + ($('website').value.trim() || '(not provided)'),
+    'Project type: ' + service,
+    'Estimated budget: ' + budget,
+    '',
+    'Project details:',
+    $('message').value.trim() || '[project details not provided]',
+    '',
+    'Thanks!',
+  ].join('\n');
 }
-function mailHref() { return 'mailto:' + CONFIG.email + '?subject=' + encodeURIComponent('Website project enquiry') + '&body=' + encodeURIComponent(msgText()); }
-function copyText(text, okMsg) {
+function mailHref() { return 'mailto:' + CONFIG.primaryEmail + '?subject=' + encodeURIComponent('Website project enquiry') + '&body=' + encodeURIComponent(msgText()); }
+function gmailHref() {
+  const params = new URLSearchParams({ view: 'cm', fs: '1', to: CONFIG.primaryEmail, su: 'Website project enquiry', body: msgText() });
+  return 'https://mail.google.com/mail/?' + params.toString();
+}
+function updateContactLinks() {
+  $('cmail').href = mailHref(); $('cgmail').href = gmailHref();
+}
+function copyText(text, okMsg, onCopied) {
+  const complete = () => { if (onCopied) onCopied(); else toast(okMsg); };
   const fallback = () => {
     const ta = document.createElement('textarea'); ta.value = text; ta.style.cssText = 'position:fixed;left:-999px;top:0'; document.body.appendChild(ta); ta.select();
-    let ok = false; try { ok = document.execCommand('copy'); } catch (_) { } ta.remove(); toast(ok ? okMsg : 'Could not copy automatically. Press and hold to select the text.');
+    let ok = false; try { ok = document.execCommand('copy'); } catch (_) { } ta.remove();
+    if (ok) complete(); else toast('Could not copy automatically. Press and hold to select the text.');
   };
-  try { navigator.clipboard.writeText(text).then(() => toast(okMsg), fallback); } catch (_) { fallback(); }
+  try { navigator.clipboard.writeText(text).then(complete, fallback); } catch (_) { fallback(); }
+}
+function showCopyNotice() {
+  $('copyNoticeEmails').textContent = CONFIG.primaryEmail + ' or ' + CONFIG.secondaryEmail;
+  $('copyNoticeMail').href = mailHref(); $('copyNoticeGmail').href = gmailHref();
+  closeAllExcept('copyNotice'); showModal('copyNotice');
 }
 function openContact(src) {
-  $('cemail').textContent = CONFIG.email; $('cmail').href = mailHref();
+  const emails = [
+    { label: 'Primary', address: CONFIG.primaryEmail },
+    { label: 'Secondary', address: CONFIG.secondaryEmail },
+  ];
+  $('cemail').innerHTML = emails.map(email => {
+    const key = email.label.toLowerCase();
+    return '<div class="email-contact"><div class="email-contact-details"><span class="email-contact-label">' + email.label + ' email</span><code><a href="mailto:' + esc(email.address) + '">' + esc(email.address) + '</a></code></div><button class="chip" type="button" data-copy-email="' + esc(email.address) + '" aria-label="Copy ' + key + ' email address">Copy</button></div>';
+  }).join('');
+  $('cemail').querySelectorAll('[data-copy-email]').forEach(button => {
+    button.onclick = () => copyText(button.dataset.copyEmail, button.getAttribute('aria-label') + ' copied');
+  });
+  $('formStatus').hidden = true; $('formStatus').textContent = ''; $('formStatus').removeAttribute('data-state');
+  updateContactLinks();
   closeAllExcept('contact'); showModal('contact');
   if (src === 'crate' || src === 'supply') toast('Loot unlocked: a conversation about your website');
   visit('supply');
 }
+function setFormStatus(message, state) {
+  const status = $('formStatus');
+  status.textContent = message; status.dataset.state = state; status.hidden = false;
+}
+async function submitProjectInquiry(event) {
+  event.preventDefault();
+  const form = $('cform');
+  if ($('company_fax').value.trim() || form.dataset.submitting === 'true') return;
+
+  const submitButton = form.querySelector('button[type="submit"]');
+  const originalLabel = submitButton.textContent;
+  const body = new URLSearchParams(new FormData(form)).toString();
+  form.dataset.submitting = 'true'; submitButton.disabled = true; submitButton.textContent = 'Sending...';
+  setFormStatus('Sending your project inquiry...', 'pending');
+  try {
+    const response = await fetch(form.action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body,
+    });
+    if (!response.ok) throw new Error('Netlify returned HTTP ' + response.status);
+    form.reset(); updateContactLinks();
+    setFormStatus('Thanks — your project inquiry was received.', 'success');
+  } catch (error) {
+    console.error('Netlify form submission failed:', error);
+    setFormStatus('We could not send your inquiry. Please try again or use one of the email options below.', 'error');
+  } finally {
+    delete form.dataset.submitting; submitButton.disabled = false; submitButton.textContent = originalLabel;
+  }
+}
 function bindContact() {
-  ['cname', 'cbiz', 'cmsg'].forEach(id => $(id).addEventListener('input', () => { $('cmail').href = mailHref(); }));
-  $('cform').addEventListener('submit', e => e.preventDefault());
-  $('ccopyEmail').onclick = () => copyText(CONFIG.email, 'Email address copied');
-  $('ccopyMsg').onclick = () => copyText(msgText(), 'Message copied. Paste it into an email to me.');
+  ['name', 'email', 'website', 'service', 'budget', 'message'].forEach(id => {
+    const refresh = () => {
+      updateContactLinks();
+      $('formStatus').hidden = true; $('formStatus').textContent = ''; $('formStatus').removeAttribute('data-state');
+    };
+    $(id).addEventListener('input', refresh);
+    $(id).addEventListener('change', refresh);
+  });
+  $('cform').addEventListener('submit', submitProjectInquiry);
+  $('ccopyMsg').onclick = () => copyText(msgText(), 'Message copied', showCopyNotice);
   $('ccancel').onclick = closeAll;
+  $('copyNoticeBack').onclick = () => { closeAllExcept('contact'); showModal('contact'); };
 }
 
 /* ---------- CV (generated PDF, saved through the downloads capability) ---------- */
@@ -1399,7 +1570,7 @@ function buildCvPages() {
   const para = (s, size, bold, color, indent) => { wrapLines(s, size, bold, W - (indent || 0)).forEach(l => { need(size + 4); y -= size + 3; text(l, size, bold, M + (indent || 0), color); }); };
   const rule = () => { need(10); y -= 6; ops().push('0.84 0.87 0.90 RG 0.8 w ' + M + ' ' + y.toFixed(1) + ' m ' + (M + W) + ' ' + y.toFixed(1) + ' l S'); y -= 4; };
   const head = s => { need(34); y -= 12; y -= 12; text(s.toUpperCase(), 11, true, M, '0.82 0.21 0.30'); rule(); };
-  need(60); y -= 24; text(CONFIG.fullName, 22, true, M); para(CONFIG.role, 12, false, '0.35 0.42 0.50'); para(CONFIG.location + '  |  ' + CONFIG.phone + '  |  ' + CONFIG.email + '  |  kode-jo.co.za', 10, false, '0.35 0.42 0.50'); rule();
+  need(60); y -= 24; text(CONFIG.fullName, 22, true, M); para(CONFIG.role, 12, false, '0.35 0.42 0.50'); para(CONFIG.location + '  |  ' + CONFIG.phone + '  |  ' + CONFIG.primaryEmail + '  |  kode-jo.co.za', 10, false, '0.35 0.42 0.50'); rule();
   head('Profile'); para(CV.summary, 10, false);
   head('Skills'); CV.skills.forEach(s => { para(s[0] + ': ' + s[1], 10, false); });
   head('Experience'); CV.experience.forEach(e => { para(e[0], 10.5, true); para(e[1], 10, false, '0.25 0.31 0.38', 8); y -= 3; });
@@ -1478,7 +1649,7 @@ function showNoGL() {
   $('loader').classList.add('done');
   let h = '<div class="sheet-head"><div class="sheet-ico">🏙️</div><div><span class="tag">3D view unavailable</span><h2>' + esc(CONFIG.name) + ' – ' + esc(CONFIG.role) + '</h2></div></div><div class="sheet-body"><p class="lead">Your browser could not start the 3D city, so here are the highlights.</p>';
   h += POIS.filter(p => p.lead).map(p => '<div class="mini-card"><b>' + p.ico + ' ' + esc(p.name) + '</b><span>' + esc(p.lead) + '</span></div>').join('');
-  h += '<div class="emailbox"><code>' + esc(CONFIG.email) + '</code></div></div><div class="sheet-foot"><button class="cta gold" id="glCv" type="button">View CV</button></div>';
+  h += '<div class="emailbox"><code>' + esc(CONFIG.primaryEmail) + '</code><code>' + esc(CONFIG.secondaryEmail) + '</code></div></div><div class="sheet-foot"><button class="cta gold" id="glCv" type="button">View CV</button></div>';
   $('noglSheet').innerHTML = h; $('nogl').hidden = false; $('glCv').onclick = () => { $('nogl').hidden = true; cvCard(); };
 }
 
